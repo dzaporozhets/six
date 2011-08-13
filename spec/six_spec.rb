@@ -18,12 +18,24 @@ describe Six do
         @guard.add_pack(:myrules, @rules)
       end
 
-      it "should allow acceess" do 
-        @guard.use(:myrules).allowed?(:read_book, 1, 2).should be_true
+      describe "global rules" do 
+        it "should allow acceess" do 
+          @guard.allowed?(:read_book, 1, 2).should be_true
+        end
+
+        it "should prevent unauthorized acceess" do 
+          @guard.use(:myrules).allowed?(:read_book, 2, 2).should be_false
+        end
       end
 
-      it "should prevent unauthorized acceess" do 
-        @guard.use(:myrules).allowed?(:read_book, 2, 2).should be_false
+      describe "namespace rules" do 
+        it "should allow acceess" do 
+          @guard.use(:myrules).allowed?(:read_book, 1, 2).should be_true
+        end
+
+        it "should prevent unauthorized acceess" do 
+          @guard.use(:myrules).allowed?(:read_book, 2, 2).should be_false
+        end
       end
     end
   end

@@ -35,7 +35,11 @@ module Six
     end
 
     def allowed?(action, object, subject)
-      current_rule_pack.allowed(object, subject).include?(action)
+      if current_rule_pack
+        current_rule_pack.allowed(object, subject).include?(action)
+      else 
+        rules_packs.values.map { |rp| rp.allowed(object, subject) }.flatten.include?(action)
+      end
     end
   end
 end
