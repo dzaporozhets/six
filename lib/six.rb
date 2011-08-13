@@ -1,5 +1,3 @@
-require "rubygems"
-require "bundler/setup"
 require "singleton"
 
 module Six
@@ -36,7 +34,7 @@ module Six
         raise("No such pack")
     end
 
-    def protect!(action, object, subject)
+    def allowed?(action, object, subject)
       current_rule_pack.allowed(object, subject).include?(action)
     end
   end

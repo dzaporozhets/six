@@ -1,3 +1,4 @@
+require "./spec/spec_helper"
 require "./lib/six"
 
 describe Six do 
