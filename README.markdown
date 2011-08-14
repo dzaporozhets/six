@@ -31,13 +31,13 @@ class BookRules
 end
 
 # Add rules to namespace ':book' & global namespace
-Six::Guard.instance.add_pack(:book, BookRules)
+Six.add_pack(:book, BookRules)
 
-Six::Guard.instance.allowed? :read_book, nil, nil # false
-Six::Guard.instance.allowed? :read_book, nil, published_book # true
+Six.allowed? :read_book, nil, nil # false
+Six.allowed? :read_book, nil, published_book # true
 
-Six::Guard.instance.allowed? :edit_book, nil, nil # false
-Six::Guard.instance.allowed? :edit_book, author, author.books.first # true
+Six.allowed? :edit_book, nil, nil # false
+Six.allowed? :edit_book, author, author.books.first # true
 ```
 
 ### Usage with Rails
@@ -61,11 +61,11 @@ class BooksController < ApplicationController
   protected
 
   def add_abilities
-    Six::Guard.instance.add_pack(:book, Book)
+    Six.add_pack(:book, Book)
   end
 
   def allowed?(action, object, subject)
-    Six::Guard.instance.allowed?(action, object, subject)
+    Six.allowed?(action, object, subject)
   end
 
   def load_author
@@ -90,7 +90,7 @@ end
 # Helper
 module ApplicationHelper
   def can?(action, object, subject)
-    Six::Guard.instance.allowed?(action, object, subject)
+    Six.allowed?(action, object, subject)
   end
 end
 

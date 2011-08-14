@@ -9,21 +9,37 @@ describe Six do
       end
     end
     
-    describe :use do 
+    describe "namespace usage" do 
       before do 
         @rules = MyRules.new
-        @guard = Six::Guard.instance
+        @guard = Six
         @guard.add_pack(:global, @rules)
       end
 
-      it { @guard.use(:global).should be_true }
-      it { lambda { @guard.use(:noname)}.should raise_error("No such pack") }
+      describe :use do 
+        before do 
+          @guard.use(:global)
+        end
+
+        it { @guard.current_rule_pack.should_not be_nil }
+        it { lambda { @guard.use(:noname)}.should raise_error("No such pack") }
+      end
+
+      describe :reset_use do 
+        before do 
+          @guard.use(:global)
+          @guard.reset_use
+        end
+
+        it { @guard.current_rule_pack.should be_nil }
+      end
     end
+
 
     describe :add_pack do 
       before do 
         @rules = MyRules.new
-        @guard = Six::Guard.instance
+        @guard = Six
       end
 
       it { @guard.add_pack(:global, @rules).should be_true }
@@ -33,7 +49,7 @@ describe Six do
     describe :remove_pack do 
       before do 
         @rules = MyRules.new
-        @guard = Six::Guard.instance
+        @guard = Six
         @guard.add_pack(:global, @rules)
       end
 

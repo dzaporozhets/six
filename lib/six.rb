@@ -1,14 +1,10 @@
-require "singleton"
-
-module Six
-  class Guard
-    include Singleton
-
+class Six
+  class << self
     attr_accessor :rules_packs
     attr_accessor :current_rule_pack
 
-    def initialize 
-      @rules_packs = {}
+    def rules_packs 
+      @rules_packs ||= {}
     end
 
     def use(name)
@@ -40,6 +36,10 @@ module Six
       else 
         rules_packs.values.map { |rp| rp.allowed(object, subject) }.flatten.include?(action)
       end
+    end
+
+    def reset_use
+      @current_rule_pack = nil
     end
   end
 end

@@ -14,7 +14,7 @@ describe Six do
     describe "protect!" do 
       before do 
         @rules = BookRules.new
-        @guard = Six::Guard.instance
+        @guard = Six
         @guard.add_pack(:myrules, @rules)
       end
 
