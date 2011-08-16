@@ -98,3 +98,37 @@ end
 # View
 link_to 'Edit', edit_book_path(book) if can?(:edit_book, @author, book)
 ```
+
+
+### Namespaces
+
+```ruby 
+class BookRules
+  def self.allowed(author, book)
+    [:read_book, :edit_book, :publis_book] 
+  end
+end
+
+class CarRules
+  def self.allowed(driver, car)
+    [:drive, :sell] 
+  end
+end
+
+Six.add_pack(:book, BookRules)
+Six.add_pack(:car, CarRules)
+
+Six.use(:book).allowed? :read_book, nil, nil # true
+Six.use(:car).allowed? :drive, nil, nil      # true
+
+Six.use(:car).allowed? :read_book, nil, nil # false
+Six.use(:book).allowed? :drive, nil, nil # false
+
+Six.reset_use
+Six.allowed? :drive, nil, nil # true
+Six.allowed? :read_book, nil, nil # true
+
+```
+
+
+

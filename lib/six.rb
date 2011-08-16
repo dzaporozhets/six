@@ -17,7 +17,10 @@ class Six
     end
 
     def remove_pack(name)
-      rules_packs.delete(name.to_sym)
+      if pack_exist?(name)
+        @current_rule_pack = nil if rules_packs[name.to_sym] == @current_rule_pack
+        rules_packs.delete(name.to_sym)
+      end
     end
 
     def valid_rules_object?(object)

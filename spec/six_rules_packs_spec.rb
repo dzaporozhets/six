@@ -54,7 +54,7 @@ describe Six do
       end
 
       it { @guard.remove_pack(:global).should be_true }
-      it { @guard.remove_pack(:zzz).should be_false }
+      it { lambda { @guard.remove_pack(:zzz)}.should raise_error("No such pack") }
     end
   end
 end
