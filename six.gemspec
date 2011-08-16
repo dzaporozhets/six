@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'six'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.date        = '2011-08-13'
   s.summary     = "six"
   s.description = "Very simple authorization gem"
