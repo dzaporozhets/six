@@ -1,4 +1,4 @@
-## Six - is a authorization gem for ruby!
+## Six - is a ultra simple authorization gem for ruby!
 
 ### Installation
 
@@ -12,13 +12,14 @@
 class BookRules
   # All authorization works on objects with method 'allowed'
   # No magic behind the scene
-  # You can put this method to any class you want
-  # It should always return array 
+  # You can put this method to any class or object you want
+  # It should always return array
+  # And be aready to get nil in args
   def self.allowed(author, book)
     rules = []
 
     # good practice is to check for object type
-    return rules unless book.instance_of?(Book)
+    return rules unless book && book.instance_of?(Book)
 
     rules << :read_book if book.published? 
     rules << :edit_book if author && author.id == book.author_id
@@ -31,7 +32,7 @@ class BookRules
 end
 
 # Add rules to namespace ':book' & global namespace
-Six.add_pack(:book, BookRules)
+Six.add_pack(:book, BookRules) # true
 
 Six.allowed? :read_book, nil, nil # false
 Six.allowed? :read_book, nil, published_book # true
@@ -80,7 +81,7 @@ class Book < ActiveRecord::Base
 
   def self.allowed(object, subject)
     rules = []
-    return rules unless book.instance_of?(Book)
+    return rules unless book && book.instance_of?(Book)
     rules << :read_book if subject.public?
     rules << :edit_book if object && object.id == subject.author_id
     rules
@@ -115,18 +116,39 @@ class CarRules
   end
 end
 
-Six.add_pack(:book, BookRules)
-Six.add_pack(:car, CarRules)
+# add packs
+Six.add_pack(:book, BookRules) # true
+Six.add_pack(:car, CarRules)   # true
+Six.add_pack(:ufo, nil)        # false
+Six.add_pack!(:ufo, nil)       # raise Six::InvalidPackPassed
 
-Six.use(:book).allowed? :read_book, nil, nil # true
-Six.use(:car).allowed? :drive, nil, nil      # true
 
-Six.use(:car).allowed? :read_book, nil, nil # false
-Six.use(:book).allowed? :drive, nil, nil # false
-
-Six.reset_use
-Six.allowed? :drive, nil, nil # true
+# use specific pack for rules
+Six.use(:book) # true
 Six.allowed? :read_book, nil, nil # true
+Six.allowed? :drive, nil, nil # false
+
+Six.use(:car)
+Six.allowed? :drive, nil, nil      # true
+Six.allowed? :read_book, nil, nil  # false
+
+# use reset to return to global usage
+Six.reset_use
+Six.allowed? :drive, nil, nil     # true
+Six.allowed? :read_book, nil, nil # true
+
+# different use methods
+Six.use(:ufo)  # false
+Six.use!(:ufo) # raise Six::NoPackError
+
+
+# remove pack
+Six.remove(:book)  # true
+Six.remove(:ufo)   # false
+Six.remove!(:ufo)  # raise Six::NoPackError
+
+Six.use(:car)  # true
+Six.current_rule_pack # :car
 
 ```
 
