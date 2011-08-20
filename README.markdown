@@ -19,54 +19,79 @@ class BookRules
     rules = []
 
     # good practice is to check for object type
-    return rules unless book && book.instance_of?(Book)
+    return rules unless book.instance_of?(Book)
 
     rules << :read_book if book.published? 
-    rules << :edit_book if author && author.id == book.author_id
+    rules << :edit_book if book.author?(author)
 
     # you are free to write any conditions you need
-    if author && author.id == book.author_id && book.is_approved? # ....etc...
+    if book.author?(author) && book.is_approved? # ....etc...
       rules << :publis_book 
-    rules
+    end
+
+    rules # return array of abilities
   end
 end
 
+# create abilites object
+abilites = Six.new
+
 # Add rules to namespace ':book' & global namespace
-Six.add_pack(:book, BookRules) # true
+abilities.add_pack(:book, BookRules) # true
 
-Six.allowed? :read_book, nil, nil # false
-Six.allowed? :read_book, nil, published_book # true
+# thats all - now we can use it!
 
-Six.allowed? :edit_book, nil, nil # false
-Six.allowed? :edit_book, author, author.books.first # true
+abilities.allowed? :read_book, nil, nil # false
+abilities.allowed? :read_book, nil, published_book # true
+
+abilities.allowed? :edit_book, nil, book # false
+abilities.allowed? :edit_book, author, author.books.first # true
+
+abilities.allowed? :remove_book, nil, nil # false
 ```
 
 ### Usage with Rails
 
 ```ruby 
 # Controller
+
+# application_controller.rb
+class ApplicationController < ActionController::Base
+  protect_from_forgery
+
+  helper_method :abilities, :can?
+
+  protected 
+
+  def abilities
+    @abilities ||= Six.new
+  end
+
+  # simple delegate method for controller & view
+  def can?(action, object, subject)
+    abilities.allowed?(action, object, subject)
+  end
+end
+
+# books_controller.rb
 class BooksController < ApplicationController
   before_filter :add_abilities
   before_filter :load_author
 
   def show
     @book = Book.find(params[:id])
-    head(404) and return unless allowed?(:read_book, nil, @book)
+    head(404) and return unless can?(:read_book, nil, @book)
   end
 
   def edit
     @book = Book.find(params[:id])
-    head(404) and return unless allowed?(:edit_book, @author, @book)
+    head(404) and return unless can?(:edit_book, @author, @book)
   end
 
   protected
 
   def add_abilities
-    Six.add_pack(:book, Book)
-  end
-
-  def allowed?(action, object, subject)
-    Six.allowed?(action, object, subject)
+    abilities.add_pack(:book, Book)
   end
 
   def load_author
@@ -88,14 +113,6 @@ class Book < ActiveRecord::Base
   end
 end
 
-# Helper
-module ApplicationHelper
-  def can?(action, object, subject)
-    Six.allowed?(action, object, subject)
-  end
-end
-
-
 # View
 link_to 'Edit', edit_book_path(book) if can?(:edit_book, @author, book)
 ```
@@ -116,39 +133,42 @@ class CarRules
   end
 end
 
+# init object
+abilities = Six.new
+
 # add packs
-Six.add_pack(:book, BookRules) # true
-Six.add_pack(:car, CarRules)   # true
-Six.add_pack(:ufo, nil)        # false
-Six.add_pack!(:ufo, nil)       # raise Six::InvalidPackPassed
+abilities.add_pack(:book, BookRules) # true
+abilities.add_pack(:car, CarRules)   # true
+abilities.add_pack(:ufo, nil)        # false
+abilities.add_pack!(:ufo, nil)       # raise Six::InvalidPackPassed
 
 
 # use specific pack for rules
-Six.use(:book) # true
-Six.allowed? :read_book, nil, nil # true
-Six.allowed? :drive, nil, nil # false
+abilities.use(:book) # true
+abilities.allowed? :read_book, nil, nil # true
+abilities.allowed? :drive, nil, nil # false
 
-Six.use(:car)
-Six.allowed? :drive, nil, nil      # true
-Six.allowed? :read_book, nil, nil  # false
+abilities.use(:car)
+abilities.allowed? :drive, nil, nil      # true
+abilities.allowed? :read_book, nil, nil  # false
 
 # use reset to return to global usage
-Six.reset_use
-Six.allowed? :drive, nil, nil     # true
-Six.allowed? :read_book, nil, nil # true
+abilities.reset_use
+abilities.allowed? :drive, nil, nil     # true
+abilities.allowed? :read_book, nil, nil # true
 
 # different use methods
-Six.use(:ufo)  # false
-Six.use!(:ufo) # raise Six::NoPackError
+abilities.use(:ufo)  # false
+abilities.use!(:ufo) # raise Six::NoPackError
 
 
 # remove pack
-Six.remove(:book)  # true
-Six.remove(:ufo)   # false
-Six.remove!(:ufo)  # raise Six::NoPackError
+abilities.remove(:book)  # true
+abilities.remove(:ufo)   # false
+abilities.remove!(:ufo)  # raise Six::NoPackError
 
-Six.use(:car)  # true
-Six.current_rule_pack # :car
+abilities.use(:car)  # true
+abilities.current_rule_pack # :car
 
 ```
 

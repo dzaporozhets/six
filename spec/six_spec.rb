@@ -2,9 +2,11 @@ require "./spec/spec_helper"
 require "./lib/six"
 
 describe Six do 
+  let (:abilities) { Six.new }
+
   describe :allowed? do 
     let (:rules) { BookRules.new }
-    before { Six.add_pack(:book_rules, rules) }
+    before { abilities.add_pack(:book_rules, rules) }
     
     before do 
       @jim = Author.new("Jim")
@@ -16,11 +18,11 @@ describe Six do
 
     def allowed?(action, object, subject) 
       # reset use
-      Six.reset_use
+      abilities.reset_use
 
       # validate work of both global & local namespaces
-      Six.allowed?(action, object, subject) && 
-        Six.use(:book_rules).allowed?(action, object, subject)
+      abilities.allowed?(action, object, subject) && 
+        abilities.use(:book_rules).allowed?(action, object, subject)
     end
 
     describe "should return true or false depend on access" do 
