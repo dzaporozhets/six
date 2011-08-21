@@ -6,7 +6,41 @@
   gem install six
 ```
 
-### Usage
+
+### QuickStart
+
+6 steps:
+
+1. create abilities object
+
+    ```ruby
+      abilites = Six.new
+    ```
+
+2. create object/class with allowed method - here you'll put conditions to define abilities
+
+    ```ruby
+    class BookRules
+      def self.allowed(author, book)
+        [:read_book, :edit_book]
+      end
+    end
+    ```
+
+3. Add object with your rules to abilities
+
+    ```ruby
+    abilities.add_pack(:book, BookRules) # true
+    ```
+
+4. Thats all. Now you can check abilites. In difference to CanCan it doesnt use current_user method. you manually pass object & subject.
+
+    ```ruby
+    abilities.allowed?(:read_book, User.first, Book.last) # true
+    ```
+
+
+### Advanced Usage
 
 ```ruby 
 class BookRules
