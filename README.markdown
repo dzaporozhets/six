@@ -9,7 +9,7 @@
 
 ### QuickStart
 
-6 steps:
+4 steps:
 
 1. create abilities object
 
