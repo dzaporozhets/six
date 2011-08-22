@@ -8,18 +8,18 @@ describe Six do
   describe "Rules Packs" do 
     let(:rules) { BookRules.new }
 
-    describe :add_pack do 
-      it { abilities.add_pack(:global, rules).should be_true }
-      it { abilities.add_pack(:wrong, nil).should be_false }
+    describe :add do 
+      it { abilities.add(:global, rules).should be_true }
+      it { abilities.add(:wrong, nil).should be_false }
     end
 
-    describe :add_pack! do 
-      it { abilities.add_pack!(:global, rules).should be_true }
-      it { lambda { abilities.add_pack!(:wrong, nil)}.should raise_error(Six::InvalidPackPassed) }
+    describe :add! do 
+      it { abilities.add!(:global, rules).should be_true }
+      it { lambda { abilities.add!(:wrong, nil)}.should raise_error(Six::InvalidPackPassed) }
     end
 
     describe "namespace(pack) usage" do 
-      before { abilities.add_pack(:global, rules) }
+      before { abilities.add(:global, rules) }
 
       describe :use do 
         before { abilities.use(:global) }
@@ -60,16 +60,16 @@ describe Six do
     end
 
     context "removing pack" do
-      before { abilities.add_pack(:global, rules) }
+      before { abilities.add(:global, rules) }
 
-      describe :remove_pack do 
-        it { abilities.remove_pack(:global).should be_true }
-        it { abilities.remove_pack(:zzz).should be_false }
+      describe :remove do 
+        it { abilities.remove(:global).should be_true }
+        it { abilities.remove(:zzz).should be_false }
       end
 
-      describe :remove_pack! do 
-        it { abilities.remove_pack!(:global).should be_true }
-        it { lambda { abilities.remove_pack!(:zzz)}.should raise_error(Six::NoPackError) }
+      describe :remove! do 
+        it { abilities.remove!(:global).should be_true }
+        it { lambda { abilities.remove!(:zzz)}.should raise_error(Six::NoPackError) }
       end
     end
 
@@ -88,7 +88,7 @@ describe Six do
     end
 
     describe :pack_exist? do 
-      before { abilities.add_pack(:global, rules) }
+      before { abilities.add(:global, rules) }
 
       it { abilities.pack_exist?(:global).should be_true }
       it { abilities.pack_exist?(:ufo).should be_false }

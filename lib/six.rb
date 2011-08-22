@@ -149,4 +149,10 @@ class Six
   def raise_incorrect_pack_object
     raise Six::InvalidPackPassed.new
   end
+
+  alias_method :add, :add_pack
+  alias_method :add!, :add_pack!
+
+  alias_method :remove, :remove_pack
+  alias_method :remove!, :remove_pack!
 end

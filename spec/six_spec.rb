@@ -6,7 +6,7 @@ describe Six do
 
   describe :allowed? do 
     let (:rules) { BookRules.new }
-    before { abilities.add_pack(:book_rules, rules) }
+    before { abilities.add(:book_rules, rules) }
     
     before do 
       @jim = Author.new("Jim")
