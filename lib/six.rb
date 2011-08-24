@@ -11,11 +11,12 @@ class Six
     end
   end
 
-  attr_accessor :rules_packs
-  attr_accessor :current_rule_pack
+  attr_reader :rules_packs
+  attr_reader :current_rule_pack
 
-  def rules_packs 
-    @rules_packs ||= {}
+  def initialize()
+    @rules_packs = {}
+    @current_rule_pack = nil
   end
 
   # Set current pack from stored packs by key 
@@ -150,9 +151,12 @@ class Six
     raise Six::InvalidPackPassed.new
   end
 
+  # shotcuts for long methods
+
   alias_method :add, :add_pack
   alias_method :add!, :add_pack!
-
   alias_method :remove, :remove_pack
   alias_method :remove!, :remove_pack!
+  alias_method :reset, :reset_use
+  alias_method :exist?, :pack_exist?
 end

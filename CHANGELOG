@@ -1,0 +1,8 @@
+v 0.1.1
+  - 'add' - alias method for add_pack
+  - 'add!' - alias method for add_pack!
+  - 'remove' - alias method for remove_pack
+  - 'remove!' - alias method for remove_pack!
+  - 'reset' - alias method for reset_use
+  - 'exist?' - alias method for pack_exist?
+  - attr_accessor -> attr_reader for current_rule_pack, rules_packs
