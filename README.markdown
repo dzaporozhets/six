@@ -60,7 +60,7 @@ class BookRules
 
     # you are free to write any conditions you need
     if book.author?(author) && book.is_approved? # ....etc...
-      rules << :publis_book 
+      rules << :publish_book 
     end
 
     rules # return array of abilities
