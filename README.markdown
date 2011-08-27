@@ -168,7 +168,7 @@ abilities.allowed? ... # use rules from BookRules only -> more perfomance
 ```ruby 
 class BookRules
   def self.allowed(author, book)
-    [:read_book, :edit_book, :publis_book] 
+    [:read_book, :edit_book, :publish_book] 
   end
 end
 
