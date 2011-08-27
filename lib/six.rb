@@ -37,7 +37,7 @@ class Six
 
   # Same as use but raise exception if no pack found 
   def use_pack!(name)
-    use(name) ? self : raise_no_such_pack
+    use_pack(name) ? self : raise_no_such_pack
   end
 
   # Add pack to authorization class 

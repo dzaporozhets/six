@@ -1,3 +1,7 @@
+v 0.1.2
+  - allowed?(action, object, subject) -> allowed?(object, action, subject)
+  - use & use! are now aliases for use_pack & use_pack!
+
 v 0.1.1
   - 'add' - alias method for add_pack
   - 'add!' - alias method for add_pack!
