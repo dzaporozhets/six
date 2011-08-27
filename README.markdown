@@ -60,7 +60,7 @@ class BookRules
 
     # you are free to write any conditions you need
     if book.author?(author) && book.is_approved? # ....etc...
-      rules << :publis_book 
+      rules << :publish_book 
     end
 
     rules # return array of abilities
@@ -168,7 +168,7 @@ abilities.allowed? ... # use rules from BookRules only -> more perfomance
 ```ruby 
 class BookRules
   def self.allowed(author, book)
-    [:read_book, :edit_book, :publis_book] 
+    [:read_book, :edit_book, :publish_book] 
   end
 end
 
