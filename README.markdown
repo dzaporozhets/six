@@ -36,7 +36,7 @@
 4. Thats all. Now you can check abilites. In difference to CanCan it doesnt use current_user method. you manually pass object & subject.
 
     ```ruby
-    abilities.allowed?(:read_book, User.first, Book.last) # true
+    abilities.allowed?(@user, :read_book, @book) # true
     ```
 
 
@@ -75,13 +75,13 @@ abilities.add(:book, BookRules) # true
 
 # thats all - now we can use it!
 
-abilities.allowed? :read_book, nil, nil # false
-abilities.allowed? :read_book, nil, published_book # true
+abilities.allowed? guest, :read_book, unpublished_book # false
+abilities.allowed? guest, :read_book, published_book # true
 
-abilities.allowed? :edit_book, nil, book # false
-abilities.allowed? :edit_book, author, author.books.first # true
+abilities.allowed? guest, :edit_book, book # false
+abilities.allowed? author, :edit_book, book # true
 
-abilities.allowed? :remove_book, nil, nil # false
+abilities.allowed? guest, :remove_book, book # false
 ```
 
 ### Usage with Rails
@@ -102,8 +102,8 @@ class ApplicationController < ActionController::Base
   end
 
   # simple delegate method for controller & view
-  def can?(action, object, subject)
-    abilities.allowed?(action, object, subject)
+  def can?(object, action, subject)
+    abilities.allowed?(object, action, subject)
   end
 end
 
@@ -114,12 +114,12 @@ class BooksController < ApplicationController
 
   def show
     @book = Book.find(params[:id])
-    head(404) and return unless can?(:read_book, nil, @book)
+    head(404) and return unless can?(:guest, :read_book, @book)
   end
 
   def edit
     @book = Book.find(params[:id])
-    head(404) and return unless can?(:edit_book, @author, @book)
+    head(404) and return unless can?(@author, :edit_book, @book)
   end
 
   protected
@@ -140,7 +140,7 @@ class Book < ActiveRecord::Base
 
   def self.allowed(object, subject)
     rules = []
-    return rules unless book && book.instance_of?(Book)
+    return rules unless book.instance_of?(Book)
     rules << :read_book if subject.public?
     rules << :edit_book if object && object.id == subject.author_id
     rules
@@ -148,9 +148,20 @@ class Book < ActiveRecord::Base
 end
 
 # View
-link_to 'Edit', edit_book_path(book) if can?(:edit_book, @author, book)
+link_to 'Edit', edit_book_path(book) if can?(@author, :edit_book, book)
 ```
 
+### :use
+
+```ruby 
+abilities.add(:book_rules, BookRules)
+abilities.add(:car_rules, CarRules)
+
+abilities.allowed? ... # scan for both BookRules & CarRules & require kind_of check
+
+abilities.use(:book_rules)
+abilities.allowed? ... # use rules from BookRules only -> more perfomance
+```
 
 ### Namespaces
 
@@ -179,17 +190,17 @@ abilities.add!(:ufo, nil)       # raise Six::InvalidPackPassed
 
 # use specific pack for rules
 abilities.use(:book) # true
-abilities.allowed? :read_book, nil, nil # true
-abilities.allowed? :drive, nil, nil # false
+abilities.allowed? :anyone, :read_book, book # true
+abilities.allowed? :anyone, :drive, car # false
 
 abilities.use(:car)
-abilities.allowed? :drive, nil, nil      # true
-abilities.allowed? :read_book, nil, nil  # false
+abilities.allowed? :anyone, :drive, :any      # true
+abilities.allowed? :anyone, :read_book, :any  # false
 
 # use reset to return to global usage
 abilities.reset_use
-abilities.allowed? :drive, nil, nil     # true
-abilities.allowed? :read_book, nil, nil # true
+abilities.allowed? :anyone, :drive, :any     # true
+abilities.allowed? :anyone, :read_book, :any # true
 
 # different use methods
 abilities.use(:ufo)  # false

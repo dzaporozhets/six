@@ -28,7 +28,7 @@ class Six
   # == Returns:
   # self or false 
   # 
-  def use(name)
+  def use_pack(name)
     if pack_exist?(name)
       @current_rule_pack = name.to_sym
       self
@@ -36,7 +36,7 @@ class Six
   end
 
   # Same as use but raise exception if no pack found 
-  def use!(name)
+  def use_pack!(name)
     use(name) ? self : raise_no_such_pack
   end
 
@@ -127,7 +127,7 @@ class Six
   # == Returns:
   # true or false 
   # 
-  def allowed?(action, object, subject)
+  def allowed?(object, action, subject)
     if current_rule_pack
       rules_packs[current_rule_pack].allowed(object, subject).include?(action)
     else 
@@ -153,6 +153,8 @@ class Six
 
   # shotcuts for long methods
 
+  alias_method :use, :use_pack
+  alias_method :use!, :use_pack!
   alias_method :add, :add_pack
   alias_method :add!, :add_pack!
   alias_method :remove, :remove_pack

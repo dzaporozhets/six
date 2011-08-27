@@ -27,31 +27,31 @@ describe Six do
 
     describe "should return true or false depend on access" do 
       context :read_book do 
-        it { allowed?(:read_book, @jim, @jims_book).should be_true }
-        it { allowed?(:read_book, @mike, @mikes_book).should be_true }
-        it { allowed?(:read_book, @jim, @mikes_book).should be_true }
-        it { allowed?(:read_book, @mike, @jims_book).should be_true }
+        it { allowed?(@jim,  :read_book, @jims_book).should be_true }
+        it { allowed?(@mike, :read_book, @mikes_book).should be_true }
+        it { allowed?(@jim,  :read_book, @mikes_book).should be_true }
+        it { allowed?(@mike, :read_book, @jims_book).should be_true }
       end
 
       context :rate_book do 
-        it { allowed?(:rate_book, @jim, @jims_book).should be_false }
-        it { allowed?(:rate_book, @mike, @mikes_book).should be_false }
-        it { allowed?(:rate_book, @jim, @mikes_book).should be_true }
-        it { allowed?(:rate_book, @mike, @jims_book).should be_true }
+        it { allowed?(@jim,  :rate_book, @jims_book).should be_false }
+        it { allowed?(@mike, :rate_book, @mikes_book).should be_false }
+        it { allowed?(@jim,  :rate_book, @mikes_book).should be_true }
+        it { allowed?(@mike, :rate_book, @jims_book).should be_true }
       end
 
       context :edit_book do 
-        it { allowed?(:edit_book, @jim, @jims_book).should be_true }
-        it { allowed?(:edit_book, @mike, @mikes_book).should be_true }
-        it { allowed?(:edit_book, @jim, @mikes_book).should be_false }
-        it { allowed?(:edit_book, @mike, @jims_book).should be_false }
+        it { allowed?(@jim, :edit_book, @jims_book).should be_true }
+        it { allowed?(@mike,:edit_book,  @mikes_book).should be_true }
+        it { allowed?(@jim, :edit_book, @mikes_book).should be_false }
+        it { allowed?(@mike,:edit_book,  @jims_book).should be_false }
       end
 
       context :publish_book do 
-        it { allowed?(:publish_book, @jim, @jims_book).should be_false }
-        it { allowed?(:publish_book, @mike, @mikes_book).should be_false }
-        it { allowed?(:publish_book, @jim, @mikes_book).should be_false }
-        it { allowed?(:publish_book, @mike, @jims_book).should be_false }
+        it { allowed?(@jim, :publish_book, @jims_book).should be_false }
+        it { allowed?(@mike,:publish_book,  @mikes_book).should be_false }
+        it { allowed?(@jim, :publish_book, @mikes_book).should be_false }
+        it { allowed?(@mike,:publish_book,  @jims_book).should be_false }
       end
     end
   end
