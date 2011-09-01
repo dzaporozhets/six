@@ -151,6 +151,21 @@ end
 link_to 'Edit', edit_book_path(book) if can?(@author, :edit_book, book)
 ```
 
+### :initialization
+
+```ruby
+# simple
+abilities = Six.new
+
+# with rules
+abilities = Six.new(:book_rules => BookRules) # same as Six.new & add(:bok_rules, BookRules)
+
+# with more
+abilities = Six.new(:book => BookRules,
+                    :auth => AuthRules,
+                    :managment => ManagerRules)
+```
+
 ### :use
 
 ```ruby 

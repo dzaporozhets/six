@@ -11,12 +11,22 @@ class Six
     end
   end
 
+  class InitializeArgumentError < StandardError
+    def message
+      "Six.new require hash as pack argument in format {:name_of_pack => PackRules.new}"
+    end
+  end
+
   attr_reader :rules_packs
   attr_reader :current_rule_pack
 
-  def initialize()
+  def initialize(packs={})
+    raise InitializeArgumentError.new unless packs.kind_of?(Hash)
+
     @rules_packs = {}
     @current_rule_pack = nil
+
+    packs.each { |key, pack| add_pack!(key, pack) }
   end
 
   # Set current pack from stored packs by key 

@@ -1,3 +1,9 @@
+v 0.1.3
+  - initialization with pack as args 
+      Ex. Six.new(:book => BookRules.new)
+  - initialization with multiple packs
+      Ex. Six.new(:book => BookRules.new, :author => AuthorRules.new)
+
 v 0.1.2
   - allowed?(action, object, subject) -> allowed?(object, action, subject)
   - use & use! are now aliases for use_pack & use_pack!
