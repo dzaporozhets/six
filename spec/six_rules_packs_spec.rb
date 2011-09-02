@@ -8,6 +8,18 @@ describe Six do
   describe "Rules Packs" do 
     let(:rules) { BookRules.new }
 
+    describe "<<" do 
+      it { (abilities << rules).should be_true }
+      it { lambda { abilities << nil }.should raise_error(Six::InvalidPackPassed) }
+
+      it_should_behave_like :valid_abilities do 
+        let (:abilities) { Six.new }
+        let (:rules) { BookRules.new }
+        let (:rules_key) { rules.object_id.to_s }
+        before { abilities << rules }
+      end
+    end
+
     describe :add do 
       it { abilities.add(:global, rules).should be_true }
       it { abilities.add(:wrong, nil).should be_false }

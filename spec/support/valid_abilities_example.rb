@@ -14,7 +14,7 @@ shared_examples :valid_abilities do
 
       # validate work of both global & local namespaces
       abilities.allowed?(action, object, subject) && 
-        abilities.use(:book_rules).allowed?(action, object, subject)
+        abilities.use(rules_key).allowed?(action, object, subject)
     end
 
     describe "should return true or false depend on access" do 
@@ -44,6 +44,13 @@ shared_examples :valid_abilities do
         it { allowed?(@mike,:publish_book,  @mikes_book).should be_false }
         it { allowed?(@jim, :publish_book, @mikes_book).should be_false }
         it { allowed?(@mike,:publish_book,  @jims_book).should be_false }
+      end
+
+      context 'passing multiple actions' do 
+        it { allowed?(@jim, [:read_book, :edit_book], @jims_book).should be_true }
+        it { allowed?(@jim, [:ead_book,  :publish_book, :edit_book], @jims_book).should be_false }
+        it { allowed?(@mike, [:read_book, :edit_book], @mikes_book).should be_true }
+        it { allowed?(@mike, [:rate_book, :publish_book, :edit_book], @mikes_book).should be_false }
       end
     end
   end

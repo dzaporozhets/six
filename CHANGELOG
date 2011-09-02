@@ -1,3 +1,10 @@
+v 0.2.0
+  - '<<' method for quick pack add  w/o specifing namespace
+      Ex. Six.new << BookRules.new
+  - allowed? method can accept array of actions and return true only if all granted
+      Ex. allowed?(:author, [:read, :write, :publish], :book ) # true
+      Ex. allowed?(:author, [:read, :write, :publish, :admin], :book ) # false
+
 v 0.1.3
   - initialization with pack as args 
       Ex. Six.new(:book => BookRules.new)

@@ -30,7 +30,7 @@
 3. Add object with your rules to abilities
 
     ```ruby
-    abilities.add(:book, BookRules) # true
+    abilities << BookRules # true
     ```
 
 4. Thats all. Now you can check abilites. In difference to CanCan it doesnt use current_user method. you manually pass object & subject.
@@ -72,6 +72,8 @@ abilites = Six.new
 
 # Add rules to namespace ':book' & global namespace
 abilities.add(:book, BookRules) # true
+# OR simple syntax w/o namespaces
+abilities << BookRules # true
 
 # thats all - now we can use it!
 
@@ -125,7 +127,7 @@ class BooksController < ApplicationController
   protected
 
   def add_abilities
-    abilities.add(:book, Book)
+    abilities << Book
   end
 
   def load_author
@@ -196,14 +198,14 @@ end
 # init object
 abilities = Six.new
 
-# add packs
+# add packs with namespace support
 abilities.add(:book, BookRules) # true
 abilities.add(:car, CarRules)   # true
 abilities.add(:ufo, nil)        # false
 abilities.add!(:ufo, nil)       # raise Six::InvalidPackPassed
 
 
-# use specific pack for rules
+# use specific pack for rules (namespace)
 abilities.use(:book) # true
 abilities.allowed? :anyone, :read_book, book # true
 abilities.allowed? :anyone, :drive, car # false

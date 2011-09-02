@@ -20,6 +20,15 @@ class Six
   attr_reader :rules_packs
   attr_reader :current_rule_pack
 
+  # Initialize ability object 
+  # 
+  # == Parameters:
+  # packs::
+  #   A Hash or rules to add with initializtion 
+  # 
+  # == Returns:
+  # self
+  # 
   def initialize(packs={})
     raise InitializeArgumentError.new unless packs.kind_of?(Hash)
 
@@ -68,6 +77,19 @@ class Six
   # Same as add_pack but raise exception if pack is invalid 
   def add_pack!(name, pack)
     add_pack(name, pack) || raise_incorrect_pack_object
+  end
+
+  # Add pack to authorization class w/o key
+  # 
+  # == Parameters:
+  # pack::
+  #   Any kind of object responding to allowed method 
+  # 
+  # == Returns:
+  # true or raise exception 
+  # 
+  def <<(pack)
+    add_pack!(pack.object_id.to_s, pack)
   end
 
   # Remove pack from authorization class 
@@ -137,11 +159,14 @@ class Six
   # == Returns:
   # true or false 
   # 
-  def allowed?(object, action, subject)
-    if current_rule_pack
-      rules_packs[current_rule_pack].allowed(object, subject).include?(action)
-    else 
-      rules_packs.values.map { |rp| rp.allowed(object, subject) }.flatten.include?(action)
+  def allowed?(object, actions, subject)
+    # if multiple actions passed
+    # check all actions to be allowed
+    if actions.respond_to?(:each) 
+      actions.all? { |action| action_included?(object, action, subject) }
+    else
+      # single action check
+      action_included?(object, actions, subject)
     end
   end
 
@@ -152,6 +177,14 @@ class Six
   end
 
   protected
+
+  def action_included?(object, action, subject)
+    if current_rule_pack
+      rules_packs[current_rule_pack].allowed(object, subject).include?(action)
+    else 
+      rules_packs.values.map { |rp| rp.allowed(object, subject) }.flatten.include?(action)
+    end
+  end
 
   def raise_no_such_pack
     raise Six::NoPackError.new

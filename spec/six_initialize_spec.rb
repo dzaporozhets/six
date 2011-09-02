@@ -30,6 +30,7 @@ describe Six, "initialize" do
     describe "passing rules on initialization" do 
       it_should_behave_like :valid_abilities do 
         let(:abilities) { Six.new(:book_rules => BookRules.new) }
+        let(:rules_key) { :book_rules }
       end
     end
   end
