@@ -1,5 +1,7 @@
 ## Six - is a ultra simple authorization gem for ruby!
 
+_based on clear ruby it can be used for rails 2 & 3 or any other framework_
+
 ### Installation
 
 ```ruby
@@ -38,53 +40,6 @@
     ```ruby
     abilities.allowed?(@user, :read_book, @book) # true
     ```
-
-
-### Advanced Usage
-
-```ruby 
-class BookRules
-  # All authorization works on objects with method 'allowed'
-  # No magic behind the scene
-  # You can put this method to any class or object you want
-  # It should always return array
-  # And be aready to get nil in args
-  def self.allowed(author, book)
-    rules = []
-
-    # good practice is to check for object type
-    return rules unless book.instance_of?(Book)
-
-    rules << :read_book if book.published? 
-    rules << :edit_book if book.author?(author)
-
-    # you are free to write any conditions you need
-    if book.author?(author) && book.is_approved? # ....etc...
-      rules << :publish_book 
-    end
-
-    rules # return array of abilities
-  end
-end
-
-# create abilites object
-abilites = Six.new
-
-# Add rules to namespace ':book' & global namespace
-abilities.add(:book, BookRules) # true
-# OR simple syntax w/o namespaces
-abilities << BookRules # true
-
-# thats all - now we can use it!
-
-abilities.allowed? guest, :read_book, unpublished_book # false
-abilities.allowed? guest, :read_book, published_book # true
-
-abilities.allowed? guest, :edit_book, book # false
-abilities.allowed? author, :edit_book, book # true
-
-abilities.allowed? guest, :remove_book, book # false
-```
 
 ### Usage with Rails
 
@@ -153,6 +108,49 @@ end
 link_to 'Edit', edit_book_path(book) if can?(@author, :edit_book, book)
 ```
 
+### Ruby Usage
+
+```ruby 
+class BookRules
+  # All authorization works on objects with method 'allowed'
+  # No magic behind the scene
+  # You can put this method to any class or object you want
+  # It should always return array
+  # And be aready to get nil in args
+  def self.allowed(author, book)
+    rules = []
+
+    # good practice is to check for object type
+    return rules unless book.instance_of?(Book)
+
+    rules << :read_book if book.published? 
+    rules << :edit_book if book.author?(author)
+
+    # you are free to write any conditions you need
+    if book.author?(author) && book.is_approved? # ....etc...
+      rules << :publish_book 
+    end
+
+    rules # return array of abilities
+  end
+end
+
+# create abilites object
+abilites = Six.new
+
+# add rules
+abilities << BookRules # true
+
+# thats all - now we can use it!
+
+abilities.allowed? guest, :read_book, unpublished_book # false
+abilities.allowed? guest, :read_book, published_book # true
+abilities.allowed? guest, :edit_book, book # false
+abilities.allowed? author, :edit_book, book # true
+abilities.allowed? guest, :remove_book, book # false
+```
+
+
 ### :initialization
 
 ```ruby
@@ -167,6 +165,42 @@ abilities = Six.new(:book => BookRules,
                     :auth => AuthRules,
                     :managment => ManagerRules)
 ```
+
+### Adding rules
+
+```ruby
+
+abilities = Six.new
+
+# 1. simple (recommended)
+# but you cant use  abilities.use(:book_rules) to 
+# search over book namespace only
+abilities << BookRules
+
+# 2. advanced
+# now you can use  abilities.use(:book_rules) to 
+# search over book namespace only
+abilities.add(:book_rules, BookRules)
+
+```
+
+### :allowed?
+
+
+```ruby
+
+abilities = Six.new
+
+abilities << BookRules
+
+abilities.allowed? @guest, :read_book, @book # true
+abilities.allowed? @guest, :edit_book, @book # false
+abilities.allowed? @guest, :rate_book, @book # true
+
+abilities.allowed? @guest, [:read_book, :edit_book], @book # false
+abilities.allowed? @guest, [:read_book, :rate_book], @book # true
+
+
 
 ### :use
 
@@ -233,6 +267,4 @@ abilities.use(:car)  # true
 abilities.current_rule_pack # :car
 
 ```
-
-
 
