@@ -199,7 +199,7 @@ abilities.allowed? @guest, :rate_book, @book # true
 
 abilities.allowed? @guest, [:read_book, :edit_book], @book # false
 abilities.allowed? @guest, [:read_book, :rate_book], @book # true
-
+```
 
 
 ### :use
