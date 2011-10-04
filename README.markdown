@@ -1,4 +1,4 @@
-## Six - is a ultra simple authorization gem for ruby!
+## Six - is a ultra simple authorization gem for ruby! ![status](https://secure.travis-ci.org/randx/six.png)
 
 _based on clear ruby it can be used for rails 2 & 3 or any other framework_
 
