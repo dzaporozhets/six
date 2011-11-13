@@ -97,7 +97,7 @@ class Book < ActiveRecord::Base
 
   def self.allowed(object, subject)
     rules = []
-    return rules unless book.instance_of?(Book)
+    return rules unless subject.instance_of?(Book)
     rules << :read_book if subject.public?
     rules << :edit_book if object && object.id == subject.author_id
     rules
@@ -105,7 +105,7 @@ class Book < ActiveRecord::Base
 end
 
 # View
-link_to 'Edit', edit_book_path(book) if can?(@author, :edit_book, book)
+link_to 'Edit', edit_book_path(book) if can?(@author, :edit_book, @book)
 ```
 
 ### Ruby Usage
