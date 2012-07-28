@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Six by randx</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Six</h1>
+        <p>ultra lite authorization library</p>
+
+        <p class="view"><a href="https://github.com/randx/six">View the Project on GitHub <small>randx/six</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/randx/six/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/randx/six/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/randx/six">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>Six - is a ultra simple authorization gem for ruby! <img src="https://secure.travis-ci.org/randx/six.png" alt="status">
+</h2>
+
+<p><em>based on clear ruby it can be used for rails 2 &amp; 3 or any other framework</em></p>
+
+<h3>Installation</h3>
+
+<div class="highlight"><pre>  <span class="n">gem</span> <span class="n">install</span> <span class="n">six</span>
+</pre></div>
+
+<h3>QuickStart</h3>
+
+<p>4 steps:</p>
+
+<ol>
+<li>
+<p>create abilities object</p>
+
+<div class="highlight"><pre>  <span class="n">abilites</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+</pre></div>
+</li>
+<li>
+<p>create object/class with allowed method - here you'll put conditions to define abilities</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">BookRules</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">allowed</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">book</span><span class="p">)</span>
+    <span class="o">[</span><span class="ss">:read_book</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="o">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</li>
+<li>
+<p>Add object with your rules to abilities</p>
+
+<div class="highlight"><pre><span class="n">abilities</span> <span class="o">&lt;&lt;</span> <span class="no">BookRules</span> <span class="c1"># true</span>
+</pre></div>
+</li>
+<li>
+<p>Thats all. Now you can check abilites. In difference to CanCan it doesnt use current_user method. you manually pass object &amp; subject.</p>
+
+<div class="highlight"><pre><span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="vi">@book</span><span class="p">)</span> <span class="c1"># true</span>
+</pre></div>
+</li>
+</ol><h3>Usage with Rails</h3>
+
+<div class="highlight"><pre><span class="c1"># Controller</span>
+
+<span class="c1"># application_controller.rb</span>
+<span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">protect_from_forgery</span>
+
+  <span class="n">helper_method</span> <span class="ss">:abilities</span><span class="p">,</span> <span class="ss">:can?</span>
+
+  <span class="kp">protected</span> 
+
+  <span class="k">def</span> <span class="nf">abilities</span>
+    <span class="vi">@abilities</span> <span class="o">||=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+  <span class="k">end</span>
+
+  <span class="c1"># simple delegate method for controller &amp; view</span>
+  <span class="k">def</span> <span class="nf">can?</span><span class="p">(</span><span class="n">object</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+    <span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span><span class="p">(</span><span class="n">object</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># books_controller.rb</span>
+<span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:add_abilities</span>
+  <span class="n">before_filter</span> <span class="ss">:load_author</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@book</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">head</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span> <span class="ow">and</span> <span class="k">return</span> <span class="k">unless</span> <span class="n">can?</span><span class="p">(</span><span class="ss">:guest</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="vi">@book</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">edit</span>
+    <span class="vi">@book</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">head</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span> <span class="ow">and</span> <span class="k">return</span> <span class="k">unless</span> <span class="n">can?</span><span class="p">(</span><span class="vi">@author</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="p">,</span> <span class="vi">@book</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="kp">protected</span>
+
+  <span class="k">def</span> <span class="nf">add_abilities</span>
+    <span class="n">abilities</span> <span class="o">&lt;&lt;</span> <span class="no">Book</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">load_author</span>
+    <span class="vi">@author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">find_by_id</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:author_id</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+
+<span class="c1"># Model</span>
+<span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:author</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">allowed</span><span class="p">(</span><span class="n">object</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+    <span class="n">rules</span> <span class="o">=</span> <span class="o">[]</span>
+    <span class="k">return</span> <span class="n">rules</span> <span class="k">unless</span> <span class="n">subject</span><span class="o">.</span><span class="n">instance_of?</span><span class="p">(</span><span class="no">Book</span><span class="p">)</span>
+    <span class="n">rules</span> <span class="o">&lt;&lt;</span> <span class="ss">:read_book</span> <span class="k">if</span> <span class="n">subject</span><span class="o">.</span><span class="n">public?</span>
+    <span class="n">rules</span> <span class="o">&lt;&lt;</span> <span class="ss">:edit_book</span> <span class="k">if</span> <span class="n">object</span> <span class="o">&amp;&amp;</span> <span class="n">object</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">subject</span><span class="o">.</span><span class="n">author_id</span>
+    <span class="n">rules</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># View</span>
+<span class="n">link_to</span> <span class="s1">'Edit'</span><span class="p">,</span> <span class="n">edit_book_path</span><span class="p">(</span><span class="n">book</span><span class="p">)</span> <span class="k">if</span> <span class="n">can?</span><span class="p">(</span><span class="vi">@author</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="p">,</span> <span class="vi">@book</span><span class="p">)</span>
+</pre></div>
+
+<h3>Ruby Usage</h3>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">BookRules</span>
+  <span class="c1"># All authorization works on objects with method 'allowed'</span>
+  <span class="c1"># No magic behind the scene</span>
+  <span class="c1"># You can put this method to any class or object you want</span>
+  <span class="c1"># It should always return array</span>
+  <span class="c1"># And be aready to get nil in args</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">allowed</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">book</span><span class="p">)</span>
+    <span class="n">rules</span> <span class="o">=</span> <span class="o">[]</span>
+
+    <span class="c1"># good practice is to check for object type</span>
+    <span class="k">return</span> <span class="n">rules</span> <span class="k">unless</span> <span class="n">book</span><span class="o">.</span><span class="n">instance_of?</span><span class="p">(</span><span class="no">Book</span><span class="p">)</span>
+
+    <span class="n">rules</span> <span class="o">&lt;&lt;</span> <span class="ss">:read_book</span> <span class="k">if</span> <span class="n">book</span><span class="o">.</span><span class="n">published?</span> 
+    <span class="n">rules</span> <span class="o">&lt;&lt;</span> <span class="ss">:edit_book</span> <span class="k">if</span> <span class="n">book</span><span class="o">.</span><span class="n">author?</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+
+    <span class="c1"># you are free to write any conditions you need</span>
+    <span class="k">if</span> <span class="n">book</span><span class="o">.</span><span class="n">author?</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">book</span><span class="o">.</span><span class="n">is_approved?</span> <span class="c1"># ....etc...</span>
+      <span class="n">rules</span> <span class="o">&lt;&lt;</span> <span class="ss">:publish_book</span> 
+    <span class="k">end</span>
+
+    <span class="n">rules</span> <span class="c1"># return array of abilities</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># create abilites object</span>
+<span class="n">abilites</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># add rules</span>
+<span class="n">abilities</span> <span class="o">&lt;&lt;</span> <span class="no">BookRules</span> <span class="c1"># true</span>
+
+<span class="c1"># thats all - now we can use it!</span>
+
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="n">guest</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="n">unpublished_book</span> <span class="c1"># false</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="n">guest</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="n">published_book</span> <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="n">guest</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="p">,</span> <span class="n">book</span> <span class="c1"># false</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="n">author</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="p">,</span> <span class="n">book</span> <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="n">guest</span><span class="p">,</span> <span class="ss">:remove_book</span><span class="p">,</span> <span class="n">book</span> <span class="c1"># false</span>
+</pre></div>
+
+<h3>:initialization</h3>
+
+<div class="highlight"><pre><span class="c1"># simple</span>
+<span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># with rules</span>
+<span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:book_rules</span> <span class="o">=&gt;</span> <span class="no">BookRules</span><span class="p">)</span> <span class="c1"># same as Six.new &amp; add(:bok_rules, BookRules)</span>
+
+<span class="c1"># with more</span>
+<span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:book</span> <span class="o">=&gt;</span> <span class="no">BookRules</span><span class="p">,</span>
+                    <span class="ss">:auth</span> <span class="o">=&gt;</span> <span class="no">AuthRules</span><span class="p">,</span>
+                    <span class="ss">:managment</span> <span class="o">=&gt;</span> <span class="no">ManagerRules</span><span class="p">)</span>
+</pre></div>
+
+<h3>Adding rules</h3>
+
+<div class="highlight"><pre><span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># 1. simple (recommended)</span>
+<span class="c1"># but you cant use  abilities.use(:book_rules) to </span>
+<span class="c1"># search over book namespace only</span>
+<span class="n">abilities</span> <span class="o">&lt;&lt;</span> <span class="no">BookRules</span>
+
+<span class="c1"># 2. advanced</span>
+<span class="c1"># now you can use  abilities.use(:book_rules) to </span>
+<span class="c1"># search over book namespace only</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:book_rules</span><span class="p">,</span> <span class="no">BookRules</span><span class="p">)</span>
+</pre></div>
+
+<h3>:allowed?</h3>
+
+<div class="highlight"><pre><span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+
+<span class="n">abilities</span> <span class="o">&lt;&lt;</span> <span class="no">BookRules</span>
+
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="vi">@guest</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="vi">@book</span> <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="vi">@guest</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="p">,</span> <span class="vi">@book</span> <span class="c1"># false</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="vi">@guest</span><span class="p">,</span> <span class="ss">:rate_book</span><span class="p">,</span> <span class="vi">@book</span> <span class="c1"># true</span>
+
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="vi">@guest</span><span class="p">,</span> <span class="o">[</span><span class="ss">:read_book</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="o">]</span><span class="p">,</span> <span class="vi">@book</span> <span class="c1"># false</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="vi">@guest</span><span class="p">,</span> <span class="o">[</span><span class="ss">:read_book</span><span class="p">,</span> <span class="ss">:rate_book</span><span class="o">]</span><span class="p">,</span> <span class="vi">@book</span> <span class="c1"># true</span>
+</pre></div>
+
+<h3>:use</h3>
+
+<div class="highlight"><pre><span class="n">abilities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:book_rules</span><span class="p">,</span> <span class="no">BookRules</span><span class="p">)</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:car_rules</span><span class="p">,</span> <span class="no">CarRules</span><span class="p">)</span>
+
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="c1"># scan for both BookRules &amp; CarRules &amp; require kind_of check</span>
+
+<span class="n">abilities</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="ss">:book_rules</span><span class="p">)</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="c1"># use rules from BookRules only -&gt; more perfomance</span>
+</pre></div>
+
+<h3>Namespaces</h3>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">BookRules</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">allowed</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">book</span><span class="p">)</span>
+    <span class="o">[</span><span class="ss">:read_book</span><span class="p">,</span> <span class="ss">:edit_book</span><span class="p">,</span> <span class="ss">:publish_book</span><span class="o">]</span> 
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">CarRules</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">allowed</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">car</span><span class="p">)</span>
+    <span class="o">[</span><span class="ss">:drive</span><span class="p">,</span> <span class="ss">:sell</span><span class="o">]</span> 
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># init object</span>
+<span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># add packs with namespace support</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:book</span><span class="p">,</span> <span class="no">BookRules</span><span class="p">)</span> <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:car</span><span class="p">,</span> <span class="no">CarRules</span><span class="p">)</span>   <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:ufo</span><span class="p">,</span> <span class="kp">nil</span><span class="p">)</span>        <span class="c1"># false</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">add!</span><span class="p">(</span><span class="ss">:ufo</span><span class="p">,</span> <span class="kp">nil</span><span class="p">)</span>       <span class="c1"># raise Six::InvalidPackPassed</span>
+
+
+<span class="c1"># use specific pack for rules (namespace)</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="ss">:book</span><span class="p">)</span> <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="ss">:anyone</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="n">book</span> <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="ss">:anyone</span><span class="p">,</span> <span class="ss">:drive</span><span class="p">,</span> <span class="n">car</span> <span class="c1"># false</span>
+
+<span class="n">abilities</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="ss">:car</span><span class="p">)</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="ss">:anyone</span><span class="p">,</span> <span class="ss">:drive</span><span class="p">,</span> <span class="ss">:any</span>      <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="ss">:anyone</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="ss">:any</span>  <span class="c1"># false</span>
+
+<span class="c1"># use reset to return to global usage</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">reset_use</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="ss">:anyone</span><span class="p">,</span> <span class="ss">:drive</span><span class="p">,</span> <span class="ss">:any</span>     <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">allowed?</span> <span class="ss">:anyone</span><span class="p">,</span> <span class="ss">:read_book</span><span class="p">,</span> <span class="ss">:any</span> <span class="c1"># true</span>
+
+<span class="c1"># different use methods</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="ss">:ufo</span><span class="p">)</span>  <span class="c1"># false</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">use!</span><span class="p">(</span><span class="ss">:ufo</span><span class="p">)</span> <span class="c1"># raise Six::NoPackError</span>
+
+
+<span class="c1"># remove pack</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="ss">:book</span><span class="p">)</span>  <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="ss">:ufo</span><span class="p">)</span>   <span class="c1"># false</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">remove!</span><span class="p">(</span><span class="ss">:ufo</span><span class="p">)</span>  <span class="c1"># raise Six::NoPackError</span>
+
+<span class="n">abilities</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="ss">:car</span><span class="p">)</span>  <span class="c1"># true</span>
+<span class="n">abilities</span><span class="o">.</span><span class="n">current_rule_pack</span> <span class="c1"># :car</span>
+</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/randx">randx</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
