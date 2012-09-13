@@ -20,15 +20,15 @@ class Six
   attr_reader :rules_packs
   attr_reader :current_rule_pack
 
-  # Initialize ability object 
-  # 
+  # Initialize ability object
+  #
   # == Parameters:
   # packs::
-  #   A Hash or rules to add with initializtion 
-  # 
+  #   A Hash or rules to add with initializtion
+  #
   # == Returns:
   # self
-  # 
+  #
   def initialize(packs={})
     raise InitializeArgumentError.new unless packs.kind_of?(Hash)
 
@@ -38,15 +38,15 @@ class Six
     packs.each { |key, pack| add_pack!(key, pack) }
   end
 
-  # Set current pack from stored packs by key 
-  # 
+  # Set current pack from stored packs by key
+  #
   # == Parameters:
   # name::
-  #   A Symbol declaring the key name of stored pack 
-  # 
+  #   A Symbol declaring the key name of stored pack
+  #
   # == Returns:
-  # self or false 
-  # 
+  # self or false
+  #
   def use_pack(name)
     if pack_exist?(name)
       @current_rule_pack = name.to_sym
@@ -54,53 +54,53 @@ class Six
     end
   end
 
-  # Same as use but raise exception if no pack found 
+  # Same as use but raise exception if no pack found
   def use_pack!(name)
     use_pack(name) ? self : raise_no_such_pack
   end
 
-  # Add pack to authorization class 
-  # 
+  # Add pack to authorization class
+  #
   # == Parameters:
   # name::
-  #   A Symbol declaring the key name of stored pack 
+  #   A Symbol declaring the key name of stored pack
   # pack::
-  #   Any kind of object responding to allowed method 
-  # 
+  #   Any kind of object responding to allowed method
+  #
   # == Returns:
-  # true or false 
-  # 
+  # true or false
+  #
   def add_pack(name, pack)
     rules_packs[name.to_sym] = pack if valid_rules_object?(pack)
   end
 
-  # Same as add_pack but raise exception if pack is invalid 
+  # Same as add_pack but raise exception if pack is invalid
   def add_pack!(name, pack)
     add_pack(name, pack) || raise_incorrect_pack_object
   end
 
   # Add pack to authorization class w/o key
-  # 
+  #
   # == Parameters:
   # pack::
-  #   Any kind of object responding to allowed method 
-  # 
+  #   Any kind of object responding to allowed method
+  #
   # == Returns:
-  # true or raise exception 
-  # 
+  # true or raise exception
+  #
   def <<(pack)
     add_pack!(pack.object_id.to_s, pack)
   end
 
-  # Remove pack from authorization class 
-  # 
+  # Remove pack from authorization class
+  #
   # == Parameters:
   # name::
-  #   A Symbol declaring the key name of stored pack 
-  # 
+  #   A Symbol declaring the key name of stored pack
+  #
   # == Returns:
-  # true or false 
-  # 
+  # true or false
+  #
   def remove_pack(name)
     if pack_exist?(name)
       @current_rule_pack = nil if rules_packs[name.to_sym] == @current_rule_pack
@@ -113,56 +113,56 @@ class Six
     remove_pack(name) || raise_no_such_pack
   end
 
-  # Check if object for rule pack is valid 
-  # 
+  # Check if object for rule pack is valid
+  #
   # == Parameters:
   # pack::
-  #   Any kind of object responding to allowed method 
-  # 
+  #   Any kind of object responding to allowed method
+  #
   # == Returns:
-  # true or false 
-  # 
+  # true or false
+  #
   def valid_rules_object?(object)
     object.respond_to?(:allowed) &&
       object.send(:allowed, nil, nil).kind_of?(Array)
-  rescue 
+  rescue
     false
   end
 
-  # Check if authorization class has pack with such name 
-  # 
+  # Check if authorization class has pack with such name
+  #
   # == Parameters:
   # name::
-  #   A Symbol declaring the key name of stored pack 
-  # 
+  #   A Symbol declaring the key name of stored pack
+  #
   # == Returns:
-  # true or false 
-  # 
+  # true or false
+  #
   def pack_exist?(name)
     rules_packs.has_key?(name.to_sym)
   end
 
   # Check if authorization class allow access for object to subject
-  # using selected pack or all stored. 
-  # Basically this method 
+  # using selected pack or all stored.
+  # Basically this method
   # 1. send :allowed for every stored object in packs and pass object & subject
   # 2. check if any of results include allowed action
-  # 
+  #
   # == Parameters:
   # action::
-  #   Action name to check for access 
+  #   Action name to check for access
   # object::
-  #   object trying to access resource 
+  #   object trying to access resource
   # subject::
   #   resource
-  # 
+  #
   # == Returns:
-  # true or false 
-  # 
+  # true or false
+  #
   def allowed?(object, actions, subject)
     # if multiple actions passed
     # check all actions to be allowed
-    if actions.respond_to?(:each) 
+    if actions.respond_to?(:each)
       actions.all? { |action| action_included?(object, action, subject) }
     else
       # single action check
@@ -170,7 +170,7 @@ class Six
     end
   end
 
-  # Reset current used rule pack so auth class use 
+  # Reset current used rule pack so auth class use
   # global allowed? for new request
   def reset_use
     @current_rule_pack = nil
@@ -181,7 +181,7 @@ class Six
   def action_included?(object, action, subject)
     if current_rule_pack
       rules_packs[current_rule_pack].allowed(object, subject).include?(action)
-    else 
+    else
       rules_packs.values.map { |rp| rp.allowed(object, subject) }.flatten.include?(action)
     end
   end
