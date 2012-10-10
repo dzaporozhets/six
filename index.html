@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,17 +16,18 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Six</h1>
-        <p>ultra lite authorization library</p>
-
-        <p class="view"><a href="https://github.com/randx/six">View the Project on GitHub <small>randx/six</small></a></p>
-
+        <h1 class="header">Six</h1>
+        <p class="header">ultra lite authorization library</p>
 
         <ul>
-          <li><a href="https://github.com/randx/six/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/randx/six/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/randx/six">View On <strong>GitHub</strong></a></li>
+          <li class="download"><a class="buttons" href="https://github.com/randx/six/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/randx/six/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/randx/six">View On GitHub</a></li>
         </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/randx">randx</a></p>
+
+
       </header>
       <section>
         <h2>Six - is a ultra simple authorization gem for ruby! <img src="https://secure.travis-ci.org/randx/six.png" alt="status">
@@ -194,7 +196,8 @@
 
 <h3>Adding rules</h3>
 
-<div class="highlight"><pre><span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+<div class="highlight"><pre>
+<span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
 
 <span class="c1"># 1. simple (recommended)</span>
 <span class="c1"># but you cant use  abilities.use(:book_rules) to </span>
@@ -205,11 +208,13 @@
 <span class="c1"># now you can use  abilities.use(:book_rules) to </span>
 <span class="c1"># search over book namespace only</span>
 <span class="n">abilities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:book_rules</span><span class="p">,</span> <span class="no">BookRules</span><span class="p">)</span>
+
 </pre></div>
 
 <h3>:allowed?</h3>
 
-<div class="highlight"><pre><span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
+<div class="highlight"><pre>
+<span class="n">abilities</span> <span class="o">=</span> <span class="no">Six</span><span class="o">.</span><span class="n">new</span>
 
 <span class="n">abilities</span> <span class="o">&lt;&lt;</span> <span class="no">BookRules</span>
 
@@ -282,14 +287,14 @@
 
 <span class="n">abilities</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="ss">:car</span><span class="p">)</span>  <span class="c1"># true</span>
 <span class="n">abilities</span><span class="o">.</span><span class="n">current_rule_pack</span> <span class="c1"># :car</span>
+
 </pre></div>
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/randx">randx</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
   </body>
 </html>
