@@ -158,7 +158,7 @@ abilities.allowed? guest, :remove_book, book # false
 abilities = Six.new
 
 # with rules
-abilities = Six.new(:book_rules => BookRules) # same as Six.new & add(:bok_rules, BookRules)
+abilities = Six.new(:book_rules => BookRules) # same as Six.new & add(:book_rules, BookRules)
 
 # with more
 abilities = Six.new(:book => BookRules,
