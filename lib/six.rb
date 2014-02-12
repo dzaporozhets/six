@@ -159,7 +159,7 @@ class Six
   # == Returns:
   # true or false
   #
-  def allowed?(object, actions, subject)
+  def allowed?(object, actions, subject = nil)
     # if multiple actions passed
     # check all actions to be allowed
     if actions.respond_to?(:each)
