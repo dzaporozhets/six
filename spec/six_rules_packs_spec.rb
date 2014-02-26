@@ -106,4 +106,27 @@ describe Six do
       it { abilities.pack_exist?(:ufo).should be_false }
     end
   end
+
+  describe "allowed? without subject" do
+    it "should default the subject to nil when passing it to the rules" do
+      rules = Class.new do
+        attr_accessor :subject_passed_to_me
+        def allowed(_, b)
+          self.subject_passed_to_me = b
+          []
+        end
+      end.new
+
+      abilities.add(:test, rules)
+
+      # default the subject to something
+      rules.subject_passed_to_me = Object.new
+
+      # call allowed without a subject
+      abilities.allowed?(Object.new, :irrelvant)
+
+      # was the subject passed in as nil?
+      rules.subject_passed_to_me.should be_nil
+    end
+  end
 end
