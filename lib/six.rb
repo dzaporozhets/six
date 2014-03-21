@@ -180,7 +180,9 @@ class Six
 
   def action_included?(object, action, subject)
     if current_rule_pack
-      rules_packs[current_rule_pack].allowed(object, subject).include?(action)
+      rules_packs[current_rule_pack].allowed(object, subject)
+                                    .map { |a| a.to_s }
+                                    .include?(action.to_s)
     else
       rules_packs.values
                  .map { |rp| rp.allowed(object, subject) }
