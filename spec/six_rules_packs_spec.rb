@@ -129,4 +129,20 @@ describe Six do
       rules.subject_passed_to_me.should be_nil
     end
   end
+
+  describe "allowed? without strings or symbols" do
+    it "should treat both the same" do
+      rules = Class.new do
+        def allowed(a, b)
+          [:strings_or_symbols_i_dont_care]
+        end
+      end.new
+
+      abilities.add(:test, rules)
+
+      # call allowed without a subject
+      abilities.allowed?(Object.new, :strings_or_symbols_i_dont_care).should be_true
+      abilities.allowed?(Object.new, 'strings_or_symbols_i_dont_care').should be_true
+    end
+  end
 end

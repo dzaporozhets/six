@@ -182,7 +182,11 @@ class Six
     if current_rule_pack
       rules_packs[current_rule_pack].allowed(object, subject).include?(action)
     else
-      rules_packs.values.map { |rp| rp.allowed(object, subject) }.flatten.include?(action)
+      rules_packs.values
+                 .map { |rp| rp.allowed(object, subject) }
+                 .flatten
+                 .map { |a| a.to_s }
+                 .include?(action.to_s)
     end
   end
 
