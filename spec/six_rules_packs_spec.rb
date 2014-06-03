@@ -10,7 +10,6 @@ describe Six do
 
     describe "<<" do
       it { (abilities << rules).should be_true }
-      it { lambda { abilities << nil }.should raise_error(Six::InvalidPackPassed) }
 
       it_should_behave_like :valid_abilities do
         let (:abilities) { Six.new }
@@ -27,7 +26,6 @@ describe Six do
 
     describe :add! do
       it { abilities.add!(:global, rules).should be_true }
-      it { lambda { abilities.add!(:wrong, nil)}.should raise_error(Six::InvalidPackPassed) }
     end
 
     describe "namespace(pack) usage" do

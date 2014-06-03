@@ -71,12 +71,12 @@ class Six
   # true or false
   #
   def add_pack(name, pack)
-    rules_packs[name.to_sym] = pack if valid_rules_object?(pack)
+    rules_packs[name.to_sym] = pack# if valid_rules_object?(pack)
   end
 
   # Same as add_pack but raise exception if pack is invalid
   def add_pack!(name, pack)
-    add_pack(name, pack) || raise_incorrect_pack_object
+    add_pack(name, pack)# || raise_incorrect_pack_object
   end
 
   # Add pack to authorization class w/o key
@@ -190,6 +190,8 @@ class Six
                  .map { |a| a.to_s }
                  .include?(action.to_s)
     end
+  rescue
+    false
   end
 
   def raise_no_such_pack
