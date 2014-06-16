@@ -150,4 +150,34 @@ describe Six do
     end
 
   end
+
+  describe "reject" do
+
+    describe "preventing a rule" do
+
+      it "should" do
+        allowed_rules = Class.new do
+          def allowed(a, b)
+            [:apple]
+          end
+        end.new
+        prevented_rules = Class.new do
+          def allowed(a, b)
+            []
+          end
+          def prevented(a, b)
+            [:apple]
+          end
+        end.new
+
+        abilities << allowed_rules
+        abilities << prevented_rules
+
+        abilities.allowed?(Object.new, :apple).should be_false
+      end
+
+    end
+
+  end
+
 end

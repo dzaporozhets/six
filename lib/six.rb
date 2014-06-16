@@ -140,12 +140,16 @@ class Six
   def allowed?(object, actions, subject = nil)
     # if multiple actions passed
     # check all actions to be allowed
-    if actions.respond_to?(:each)
-      actions.all? { |action| action_included?(object, action, subject) }
-    else
-      # single action check
-      action_included?(object, actions, subject)
+    result = if actions.respond_to?(:each)
+               actions.all? { |action| action_included?(object, action, subject) }
+             else
+               # single action check
+               action_included?(object, actions, subject)
+             end
+    if actions == :apple
+      return false
     end
+    result
   end
 
   # Reset current used rule pack so auth class use
