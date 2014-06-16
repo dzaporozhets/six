@@ -7,11 +7,8 @@ class Six
   end
 
   def allowed? subject, actions, target = nil
-    if actions.respond_to?(:each)
-      actions.all? { |action| action_included?(subject, action, target) }
-    else
-      action_included?(subject, actions, target)
-    end
+    actions = [actions] unless actions.respond_to?(:each)
+    actions.all? { |a| action_included? subject, a, target }
   end
 
   private
