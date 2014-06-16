@@ -7,11 +7,11 @@ class Six
     @rules_packs = rules_packs
   end
 
-  def allowed?(object, actions, subject = nil)
+  def allowed?(subject, actions, target = nil)
     result = if actions.respond_to?(:each)
-               actions.all? { |action| action_included?(object, action, subject) }
+               actions.all? { |action| action_included?(subject, action, target) }
              else
-               action_included?(object, actions, subject)
+               action_included?(subject, actions, target)
              end
     result
   end
