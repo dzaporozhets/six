@@ -1,10 +1,6 @@
-class Six
-  class NoPackError < StandardError
-    def message
-      "No such pack"
-    end
-  end
+Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 
+class Six
   class InitializeArgumentError < StandardError
     def message
       "Six.new require hash as pack argument in format {:name_of_pack => PackRules.new}"
