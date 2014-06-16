@@ -68,11 +68,6 @@ class Six
     rules_packs[name.to_sym] = pack
   end
 
-  # Same as add_pack but raise exception if pack is invalid
-  def add_pack!(name, pack)
-    add_pack(name, pack)
-  end
-
   # Add pack to authorization class w/o key
   #
   # == Parameters:
@@ -196,6 +191,7 @@ class Six
 
   alias_method :use, :use_pack
   alias_method :use!, :use_pack!
+  alias_method :add_pack!, :add_pack
   alias_method :add, :add_pack
   alias_method :add!, :add_pack!
   alias_method :remove, :remove_pack
