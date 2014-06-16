@@ -2,7 +2,6 @@ Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 
 class Six
   attr_reader :rules_packs
-  attr_reader :current_rule_pack
 
   # Initialize ability object
   #
@@ -17,30 +16,8 @@ class Six
     raise InitializeArgumentError.new unless packs.kind_of?(Hash)
 
     @rules_packs = {}
-    @current_rule_pack = nil
 
     packs.each { |key, pack| add_pack!(key, pack) }
-  end
-
-  # Set current pack from stored packs by key
-  #
-  # == Parameters:
-  # name::
-  #   A Symbol declaring the key name of stored pack
-  #
-  # == Returns:
-  # self or false
-  #
-  def use_pack(name)
-    if pack_exist?(name)
-      @current_rule_pack = name.to_sym
-      self
-    end
-  end
-
-  # Same as use but raise exception if no pack found
-  def use_pack!(name)
-    use_pack(name) ? self : raise_no_such_pack
   end
 
   # Add pack to authorization class
@@ -82,7 +59,6 @@ class Six
   #
   def remove_pack(name)
     if pack_exist?(name)
-      @current_rule_pack = nil if rules_packs[name.to_sym] == @current_rule_pack
       rules_packs.delete(name.to_sym)
     end
   end
@@ -140,30 +116,19 @@ class Six
     result
   end
 
-  # Reset current used rule pack so auth class use
-  # global allowed? for new request
-  def reset_use
-    @current_rule_pack = nil
-  end
-
   protected
 
   def action_included?(object, action, subject)
-    rules = if current_rule_pack
-              rules_packs[current_rule_pack].allowed(object, subject)
-                                            .map { |a| a.to_s }
-            else
-              rules_packs.values
-                         .map do |rp| 
-                           begin
-                             rp.allowed(object, subject)
-                           rescue
-                             []
-                           end
+    rules = rules_packs.values
+                       .map do |rp| 
+                         begin
+                           rp.allowed(object, subject)
+                         rescue
+                           []
                          end
-                         .flatten
-                         .map { |a| a.to_s }
-            end
+                       end
+                       .flatten
+                       .map { |a| a.to_s }
 
     rejection_rules = []
 
@@ -185,13 +150,10 @@ class Six
 
   # shotcuts for long methods
 
-  alias_method :use, :use_pack
-  alias_method :use!, :use_pack!
   alias_method :add_pack!, :add_pack
   alias_method :add, :add_pack
   alias_method :add!, :add_pack!
   alias_method :remove, :remove_pack
   alias_method :remove!, :remove_pack!
-  alias_method :reset, :reset_use
   alias_method :exist?, :pack_exist?
 end
