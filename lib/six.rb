@@ -15,10 +15,6 @@ class Six
     add_pack!(pack.object_id.to_s, pack)
   end
 
-  def pack_exist?(name)
-    rules_packs.has_key?(name.to_sym)
-  end
-
   def allowed?(object, actions, subject = nil)
     result = if actions.respond_to?(:each)
                actions.all? { |action| action_included?(object, action, subject) }
@@ -56,5 +52,4 @@ class Six
   alias_method :add_pack!, :add_pack
   alias_method :add, :add_pack
   alias_method :add!, :add_pack!
-  alias_method :exist?, :pack_exist?
 end
