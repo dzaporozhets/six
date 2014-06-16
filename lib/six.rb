@@ -3,14 +3,12 @@ Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 class Six
   attr_reader :rules_packs
 
-  def initialize(packs={})
-    @rules_packs = {}
-
-    packs.each { |key, pack| add_pack!(key, pack) }
+  def initialize
+    @rules_packs = []
   end
 
-  def add_pack(name, pack)
-    rules_packs[name.to_sym] = pack
+  def add_pack(_, pack)
+    rules_packs << pack
   end
 
   def <<(pack)
@@ -33,8 +31,7 @@ class Six
   protected
 
   def action_included?(object, action, subject)
-    rules = rules_packs.values
-                       .map do |rp| 
+    rules = rules_packs.map do |rp| 
                          begin
                            rp.allowed(object, subject)
                          rescue
@@ -46,7 +43,7 @@ class Six
 
     rejection_rules = []
 
-    rules_packs.values.map do |rule_pack|
+    rules_packs.map do |rule_pack|
       next unless rule_pack.respond_to?(:prevented)
       rejection_rules << rule_pack.prevented(object, subject)
     end
@@ -54,8 +51,6 @@ class Six
 
     rules = rules.reject { |x| rejection_rules.include?(x.to_s) }
     rules.include?(action.to_s)
-  rescue
-    false
   end
 
   alias_method :add_pack!, :add_pack
