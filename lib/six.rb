@@ -4,8 +4,6 @@ class Six
   attr_reader :rules_packs
 
   def initialize(packs={})
-    raise InitializeArgumentError.new unless packs.kind_of?(Hash)
-
     @rules_packs = {}
 
     packs.each { |key, pack| add_pack!(key, pack) }
