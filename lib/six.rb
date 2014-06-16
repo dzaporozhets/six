@@ -17,17 +17,17 @@ class Six
     @rules
   end
 
-  def action_included? object, permission_to_check, subject
+  def action_included? subject, permission_to_check, target
     permissions = rules.map do |rp| 
                               begin
-                                rp.allowed object, subject
+                                rp.allowed subject, target
                               rescue
                                 []
                               end
                             end.flatten.map { |a| a.to_s }
 
     permissions_to_reject = rules.select { |r| r.respond_to? :prevented }.map do |rule_pack|
-                              rule_pack.prevented(object, subject)
+                              rule_pack.prevented(subject, target)
                             end.flatten.map { |x| x.to_s } 
 
     permissions.reject! { |x| permissions_to_reject.include? x.to_s }
