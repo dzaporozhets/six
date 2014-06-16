@@ -7,14 +7,6 @@ class Six
     @rules_packs = rules_packs
   end
 
-  def add_pack(_, pack)
-    rules_packs << pack
-  end
-
-  def <<(pack)
-    add_pack!(pack.object_id.to_s, pack)
-  end
-
   def allowed?(object, actions, subject = nil)
     result = if actions.respond_to?(:each)
                actions.all? { |action| action_included?(object, action, subject) }
@@ -49,7 +41,4 @@ class Six
     rules.include?(action.to_s)
   end
 
-  alias_method :add_pack!, :add_pack
-  alias_method :add, :add_pack
-  alias_method :add!, :add_pack!
 end
