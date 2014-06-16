@@ -3,8 +3,8 @@ Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 class Six
   attr_reader :rules_packs
 
-  def initialize
-    @rules_packs = []
+  def initialize(rules_packs = [])
+    @rules_packs = rules_packs
   end
 
   def add_pack(_, pack)
