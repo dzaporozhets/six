@@ -178,7 +178,7 @@ class Six
 
     rules_packs.values.map do |rule_pack|
       next unless rule_pack.respond_to?(:prevented)
-      rejection_rules << rule_pack.prevented(nil, nil)
+      rejection_rules << rule_pack.prevented(object, subject)
     end
     rejection_rules = rejection_rules.flatten.map { |x| x.to_s } 
 
