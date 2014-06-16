@@ -26,12 +26,9 @@ class Six
                               end
                             end.flatten.map { |a| a.to_s }
 
-    permissions_to_reject = []
-
-    rules.select { |r| r.respond_to? :prevented }.map do |rule_pack|
-      permissions_to_reject << rule_pack.prevented(object, subject)
-    end
-    permissions_to_reject = permissions_to_reject.flatten.map { |x| x.to_s } 
+    permissions_to_reject = rules.select { |r| r.respond_to? :prevented }.map do |rule_pack|
+                              rule_pack.prevented(object, subject)
+                            end.flatten.map { |x| x.to_s } 
 
     permissions.reject! { |x| permissions_to_reject.include? x.to_s }
     permissions.include? action.to_s
