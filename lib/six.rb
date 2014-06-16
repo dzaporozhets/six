@@ -1,33 +1,33 @@
 Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 
 class Six
-  attr_reader :rules
 
-  def initialize(rules = [])
+  def initialize rules = []
     @rules = rules
   end
 
-  def allowed?(subject, actions, target = nil)
-    result = if actions.respond_to?(:each)
-               actions.all? { |action| action_included?(subject, action, target) }
-             else
-               action_included?(subject, actions, target)
-             end
-    result
+  def allowed? subject, actions, target = nil
+    if actions.respond_to?(:each)
+      actions.all? { |action| action_included?(subject, action, target) }
+    else
+      action_included?(subject, actions, target)
+    end
   end
 
-  protected
+  private
+
+  def rules
+    @rules
+  end
 
   def action_included?(object, action, subject)
     permissions = rules.map do |rp| 
-                         begin
-                           rp.allowed(object, subject)
-                         rescue
-                           []
-                         end
-                       end
-                       .flatten
-                       .map { |a| a.to_s }
+                              begin
+                                rp.allowed(object, subject)
+                              rescue
+                                []
+                              end
+                            end.flatten.map { |a| a.to_s }
 
     rejection_rules = []
 
@@ -37,8 +37,8 @@ class Six
     end
     rejection_rules = rejection_rules.flatten.map { |x| x.to_s } 
 
-    permissions = permissions.reject { |x| rejection_rules.include?(x.to_s) }
-    permissions.include?(action.to_s)
+    permissions.reject! { |x| rejection_rules.include?(x.to_s) }
+    permissions.include? action.to_s
   end
 
 end
