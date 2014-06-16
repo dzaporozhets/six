@@ -17,16 +17,6 @@ class Six
     add_pack!(pack.object_id.to_s, pack)
   end
 
-  def remove_pack(name)
-    if pack_exist?(name)
-      rules_packs.delete(name.to_sym)
-    end
-  end
-
-  def remove_pack!(name)
-    remove_pack(name) || raise_no_such_pack
-  end
-
   def pack_exist?(name)
     rules_packs.has_key?(name.to_sym)
   end
@@ -66,10 +56,6 @@ class Six
     rules.include?(action.to_s)
   rescue
     false
-  end
-
-  def raise_no_such_pack
-    raise Six::NoPackError.new
   end
 
   alias_method :add_pack!, :add_pack
