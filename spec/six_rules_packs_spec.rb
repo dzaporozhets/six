@@ -153,27 +153,52 @@ describe Six do
 
   describe "reject" do
 
-    describe "preventing a rule" do
+    [:apple, :orange].each do |rule_to_reject|
 
-      it "should" do
-        allowed_rules = Class.new do
-          def allowed(a, b)
-            [:apple]
-          end
-        end.new
-        prevented_rules = Class.new do
-          def allowed(a, b)
-            []
-          end
-          def prevented(a, b)
-            [:apple]
-          end
-        end.new
+      describe "preventing a rule" do
 
-        abilities << allowed_rules
-        abilities << prevented_rules
+        it "should block out the rule if it is included in the prevented method of another" do
+          allowed_rules = eval("Class.new do
+            def allowed(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
+          prevented_rules = eval("Class.new do
+            def allowed(a, b)
+              []
+            end
+            def prevented(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
 
-        abilities.allowed?(Object.new, :apple).should be_false
+          abilities << allowed_rules
+          abilities << prevented_rules
+
+          abilities.allowed?(Object.new, rule_to_reject).should be_false
+        end
+
+        it "should NOT block out the rule if it is included in the prevented method of another" do
+          allowed_rules = eval("Class.new do
+            def allowed(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
+          prevented_rules = eval("Class.new do
+            def allowed(a, b)
+              []
+            end
+            def prevented(a, b)
+              []
+            end
+          end.new")
+
+          abilities << allowed_rules
+          abilities << prevented_rules
+
+          abilities.allowed?(Object.new, rule_to_reject).should be_true
+        end
+
       end
 
     end

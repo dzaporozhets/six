@@ -146,9 +146,12 @@ class Six
                # single action check
                action_included?(object, actions, subject)
              end
-    if actions == :apple
-      return false
-    end
+    #rules_packs.each do |rules_pack|
+      #if rules_pack[1].respond_to?(:prevented)
+        #return false if rules_pack[1].prevented(nil, nil).include? 
+        #return false 
+      #end
+    #end
     result
   end
 
@@ -161,17 +164,26 @@ class Six
   protected
 
   def action_included?(object, action, subject)
-    if current_rule_pack
-      rules_packs[current_rule_pack].allowed(object, subject)
-                                    .map { |a| a.to_s }
-                                    .include?(action.to_s)
-    else
-      rules_packs.values
-                 .map { |rp| rp.allowed(object, subject) }
-                 .flatten
-                 .map { |a| a.to_s }
-                 .include?(action.to_s)
+    rules = if current_rule_pack
+              rules_packs[current_rule_pack].allowed(object, subject)
+                                            .map { |a| a.to_s }
+            else
+              rules_packs.values
+                         .map { |rp| rp.allowed(object, subject) }
+                         .flatten
+                         .map { |a| a.to_s }
+            end
+
+    rejection_rules = []
+
+    rules_packs.values.map do |rule_pack|
+      next unless rule_pack.respond_to?(:prevented)
+      rejection_rules << rule_pack.prevented(nil, nil)
     end
+    rejection_rules = rejection_rules.flatten.map { |x| x.to_s } 
+
+    rules = rules.reject { |x| rejection_rules.include?(x.to_s) }
+    rules.include?(action.to_s)
   rescue
     false
   end
