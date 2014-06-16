@@ -61,7 +61,5 @@ class Six
   alias_method :add_pack!, :add_pack
   alias_method :add, :add_pack
   alias_method :add!, :add_pack!
-  alias_method :remove, :remove_pack
-  alias_method :remove!, :remove_pack!
   alias_method :exist?, :pack_exist?
 end
