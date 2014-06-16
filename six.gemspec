@@ -8,4 +8,6 @@ Gem::Specification.new do |s|
   s.email       = 'dmitriy.zaporozhets@gmail.com'
   s.files       = ["lib/six.rb"]
   s.homepage    = 'https://github.com/randx/six'
+
+  s.add_development_dependency 'mocha'
 end
