@@ -65,7 +65,7 @@ class Six
   # true or false
   #
   def add_pack(name, pack)
-    rules_packs[name.to_sym] = pack# if valid_rules_object?(pack)
+    rules_packs[name.to_sym] = pack
   end
 
   # Same as add_pack but raise exception if pack is invalid
@@ -105,22 +105,6 @@ class Six
   # Same as remove_pack but raise exception if pack wasnt found
   def remove_pack!(name)
     remove_pack(name) || raise_no_such_pack
-  end
-
-  # Check if object for rule pack is valid
-  #
-  # == Parameters:
-  # pack::
-  #   Any kind of object responding to allowed method
-  #
-  # == Returns:
-  # true or false
-  #
-  def valid_rules_object?(object)
-    object.respond_to?(:allowed) &&
-      object.send(:allowed, nil, nil).kind_of?(Array)
-  rescue
-    false
   end
 
   # Check if authorization class has pack with such name

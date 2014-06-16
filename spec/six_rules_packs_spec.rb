@@ -83,20 +83,6 @@ describe Six do
       end
     end
 
-    describe :valid_rules_object? do
-      let (:invalid_with_allowed) do
-        Class.new { def allowed; nil; end }.new
-      end
-
-      let (:invalid_wo_allowed) do
-        Object.new
-      end
-
-      it { abilities.valid_rules_object?(BookRules.new).should be_true }
-      it { abilities.valid_rules_object?(invalid_with_allowed).should be_false }
-      it { abilities.valid_rules_object?(invalid_wo_allowed).should be_false }
-    end
-
     describe :pack_exist? do
       before { abilities.add(:global, rules) }
 
