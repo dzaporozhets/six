@@ -205,4 +205,30 @@ describe Six do
 
   end
 
+  describe "allowed does not exist" do
+
+    [:apple, :orange].each do |rule_to_reject|
+
+      describe "preventing a rule" do
+
+        it "should block out the rule if it is included in the prevented method of another" do
+          exists = eval("Class.new do
+            def allowed(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
+          does_not_exist = Object.new
+
+          abilities << exists
+          abilities << does_not_exist
+
+          abilities.allowed?(Object.new, rule_to_reject).should be_true
+        end
+
+      end
+
+    end
+
+  end
+
 end

@@ -1,12 +1,6 @@
 Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 
 class Six
-  class InitializeArgumentError < StandardError
-    def message
-      "Six.new require hash as pack argument in format {:name_of_pack => PackRules.new}"
-    end
-  end
-
   attr_reader :rules_packs
   attr_reader :current_rule_pack
 
@@ -160,7 +154,13 @@ class Six
                                             .map { |a| a.to_s }
             else
               rules_packs.values
-                         .map { |rp| rp.allowed(object, subject) }
+                         .map do |rp| 
+                           begin
+                             rp.allowed(object, subject)
+                           rescue
+                             []
+                           end
+                         end
                          .flatten
                          .map { |a| a.to_s }
             end
