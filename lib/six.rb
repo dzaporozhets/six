@@ -6,9 +6,9 @@ class Six
     @rules = rules
   end
 
-  def allowed? subject, actions, target = nil
-    actions = [actions] unless actions.respond_to?(:each)
-    actions.all? { |a| action_included? subject, a, target }
+  def allowed? subject, permissions_to_check, target = nil
+    permissions_to_check = [permissions_to_check] unless permissions_to_check.respond_to?(:each)
+    permissions_to_check.all? { |a| action_included? subject, a, target }
   end
 
   private
@@ -17,7 +17,7 @@ class Six
     @rules
   end
 
-  def action_included? object, action, subject
+  def action_included? object, permission_to_check, subject
     permissions = rules.map do |rp| 
                               begin
                                 rp.allowed object, subject
@@ -31,7 +31,7 @@ class Six
                             end.flatten.map { |x| x.to_s } 
 
     permissions.reject! { |x| permissions_to_reject.include? x.to_s }
-    permissions.include? action.to_s
+    permissions.include? permission_to_check.to_s
   end
 
 end
