@@ -76,7 +76,7 @@ class Six
 
   # Same as add_pack but raise exception if pack is invalid
   def add_pack!(name, pack)
-    add_pack(name, pack)# || raise_incorrect_pack_object
+    add_pack(name, pack)
   end
 
   # Add pack to authorization class w/o key
@@ -196,10 +196,6 @@ class Six
 
   def raise_no_such_pack
     raise Six::NoPackError.new
-  end
-
-  def raise_incorrect_pack_object
-    raise Six::InvalidPackPassed.new
   end
 
   # shotcuts for long methods
