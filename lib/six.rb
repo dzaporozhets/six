@@ -5,12 +5,6 @@ class Six
     end
   end
 
-  class InvalidPackPassed < StandardError
-    def message
-      "Wrong Rule Pack. You must provide correct 'allowed' method"
-    end
-  end
-
   class InitializeArgumentError < StandardError
     def message
       "Six.new require hash as pack argument in format {:name_of_pack => PackRules.new}"
