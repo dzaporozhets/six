@@ -1,22 +1,6 @@
+Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
+
 class Six
-  class NoPackError < StandardError
-    def message
-      "No such pack"
-    end
-  end
-
-  class InvalidPackPassed < StandardError
-    def message
-      "Wrong Rule Pack. You must provide correct 'allowed' method"
-    end
-  end
-
-  class InitializeArgumentError < StandardError
-    def message
-      "Six.new require hash as pack argument in format {:name_of_pack => PackRules.new}"
-    end
-  end
-
   attr_reader :rules_packs
   attr_reader :current_rule_pack
 
@@ -71,12 +55,7 @@ class Six
   # true or false
   #
   def add_pack(name, pack)
-    rules_packs[name.to_sym] = pack if valid_rules_object?(pack)
-  end
-
-  # Same as add_pack but raise exception if pack is invalid
-  def add_pack!(name, pack)
-    add_pack(name, pack) || raise_incorrect_pack_object
+    rules_packs[name.to_sym] = pack
   end
 
   # Add pack to authorization class w/o key
@@ -113,22 +92,6 @@ class Six
     remove_pack(name) || raise_no_such_pack
   end
 
-  # Check if object for rule pack is valid
-  #
-  # == Parameters:
-  # pack::
-  #   Any kind of object responding to allowed method
-  #
-  # == Returns:
-  # true or false
-  #
-  def valid_rules_object?(object)
-    object.respond_to?(:allowed) &&
-      object.send(:allowed, nil, nil).kind_of?(Array)
-  rescue
-    false
-  end
-
   # Check if authorization class has pack with such name
   #
   # == Parameters:
@@ -162,12 +125,19 @@ class Six
   def allowed?(object, actions, subject = nil)
     # if multiple actions passed
     # check all actions to be allowed
-    if actions.respond_to?(:each)
-      actions.all? { |action| action_included?(object, action, subject) }
-    else
-      # single action check
-      action_included?(object, actions, subject)
-    end
+    result = if actions.respond_to?(:each)
+               actions.all? { |action| action_included?(object, action, subject) }
+             else
+               # single action check
+               action_included?(object, actions, subject)
+             end
+    #rules_packs.each do |rules_pack|
+      #if rules_pack[1].respond_to?(:prevented)
+        #return false if rules_pack[1].prevented(nil, nil).include? 
+        #return false 
+      #end
+    #end
+    result
   end
 
   # Reset current used rule pack so auth class use
@@ -179,31 +149,45 @@ class Six
   protected
 
   def action_included?(object, action, subject)
-    if current_rule_pack
-      rules_packs[current_rule_pack].allowed(object, subject)
-                                    .map { |a| a.to_s }
-                                    .include?(action.to_s)
-    else
-      rules_packs.values
-                 .map { |rp| rp.allowed(object, subject) }
-                 .flatten
-                 .map { |a| a.to_s }
-                 .include?(action.to_s)
+    rules = if current_rule_pack
+              rules_packs[current_rule_pack].allowed(object, subject)
+                                            .map { |a| a.to_s }
+            else
+              rules_packs.values
+                         .map do |rp| 
+                           begin
+                             rp.allowed(object, subject)
+                           rescue
+                             []
+                           end
+                         end
+                         .flatten
+                         .map { |a| a.to_s }
+            end
+
+    rejection_rules = []
+
+    rules_packs.values.map do |rule_pack|
+      next unless rule_pack.respond_to?(:prevented)
+      rejection_rules << rule_pack.prevented(object, subject)
     end
+    rejection_rules = rejection_rules.flatten.map { |x| x.to_s } 
+
+    rules = rules.reject { |x| rejection_rules.include?(x.to_s) }
+    rules.include?(action.to_s)
+  rescue
+    false
   end
 
   def raise_no_such_pack
     raise Six::NoPackError.new
   end
 
-  def raise_incorrect_pack_object
-    raise Six::InvalidPackPassed.new
-  end
-
   # shotcuts for long methods
 
   alias_method :use, :use_pack
   alias_method :use!, :use_pack!
+  alias_method :add_pack!, :add_pack
   alias_method :add, :add_pack
   alias_method :add!, :add_pack!
   alias_method :remove, :remove_pack

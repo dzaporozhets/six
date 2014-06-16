@@ -10,7 +10,6 @@ describe Six do
 
     describe "<<" do
       it { (abilities << rules).should be_true }
-      it { lambda { abilities << nil }.should raise_error(Six::InvalidPackPassed) }
 
       it_should_behave_like :valid_abilities do
         let (:abilities) { Six.new }
@@ -27,7 +26,6 @@ describe Six do
 
     describe :add! do
       it { abilities.add!(:global, rules).should be_true }
-      it { lambda { abilities.add!(:wrong, nil)}.should raise_error(Six::InvalidPackPassed) }
     end
 
     describe "namespace(pack) usage" do
@@ -83,20 +81,6 @@ describe Six do
         it { abilities.remove!(:global).should be_true }
         it { lambda { abilities.remove!(:zzz)}.should raise_error(Six::NoPackError) }
       end
-    end
-
-    describe :valid_rules_object? do
-      let (:invalid_with_allowed) do
-        Class.new { def allowed; nil; end }.new
-      end
-
-      let (:invalid_wo_allowed) do
-        Object.new
-      end
-
-      it { abilities.valid_rules_object?(BookRules.new).should be_true }
-      it { abilities.valid_rules_object?(invalid_with_allowed).should be_false }
-      it { abilities.valid_rules_object?(invalid_wo_allowed).should be_false }
     end
 
     describe :pack_exist? do
@@ -166,4 +150,85 @@ describe Six do
     end
 
   end
+
+  describe "reject" do
+
+    [:apple, :orange].each do |rule_to_reject|
+
+      describe "preventing a rule" do
+
+        it "should block out the rule if it is included in the prevented method of another" do
+          allowed_rules = eval("Class.new do
+            def allowed(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
+          prevented_rules = eval("Class.new do
+            def allowed(a, b)
+              []
+            end
+            def prevented(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
+
+          abilities << allowed_rules
+          abilities << prevented_rules
+
+          abilities.allowed?(Object.new, rule_to_reject).should be_false
+        end
+
+        it "should NOT block out the rule if it is included in the prevented method of another" do
+          allowed_rules = eval("Class.new do
+            def allowed(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
+          prevented_rules = eval("Class.new do
+            def allowed(a, b)
+              []
+            end
+            def prevented(a, b)
+              []
+            end
+          end.new")
+
+          abilities << allowed_rules
+          abilities << prevented_rules
+
+          abilities.allowed?(Object.new, rule_to_reject).should be_true
+        end
+
+      end
+
+    end
+
+  end
+
+  describe "allowed does not exist" do
+
+    [:apple, :orange].each do |rule_to_reject|
+
+      describe "preventing a rule" do
+
+        it "should block out the rule if it is included in the prevented method of another" do
+          exists = eval("Class.new do
+            def allowed(a, b)
+              [:#{rule_to_reject}]
+            end
+          end.new")
+          does_not_exist = Object.new
+
+          abilities << exists
+          abilities << does_not_exist
+
+          abilities.allowed?(Object.new, rule_to_reject).should be_true
+        end
+
+      end
+
+    end
+
+  end
+
 end
