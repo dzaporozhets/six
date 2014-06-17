@@ -31,7 +31,54 @@ describe Six do
 
     end
 
-    describe "one rule that returns one permission" do
+    [:one, :two].each do |permission|
+
+      describe "one rule that returns one permission" do
+
+        let(:abilities) { Six.new([rule]) }
+
+        let(:subject) { Object.new }
+
+        let(:rule) do
+          o = Object.new
+          o.stubs(:allowed).with(subject, nil).returns [permission]
+          o
+        end
+
+        it "should return true for the allowed permission" do
+          abilities.allowed?(subject, permission).must_equal true
+        end
+
+        it "should return false for other permissions" do
+          abilities.allowed?(subject, :something_else).must_equal false
+          abilities.allowed?(subject, :another_thing).must_equal false
+        end
+
+        describe "with a target" do
+
+          let(:target) { Object.new }
+
+          before do
+            rule.stubs(:allowed).with(subject, target).returns [permission]
+          end
+
+          it "should return true for the allowed permission" do
+            abilities.allowed?(subject, permission).must_equal true
+          end
+
+          it "should return true if asked for the permission in an array" do
+            abilities.allowed?(subject, [permission]).must_equal true
+          end
+
+          it "should return false for other permissions" do
+            abilities.allowed?(subject, :something).must_equal false
+            abilities.allowed?(subject, :another).must_equal false
+          end
+
+        end
+
+      end
+
     end
 
   end
