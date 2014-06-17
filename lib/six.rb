@@ -49,8 +49,13 @@ class Six
   end
 
   def permissions_to_reject_for subject, target
-    rules_that_defined_prevented = rules.select { |r| r.respond_to? :prevented }
-    permissions = rules_that_defined_prevented.map { |r| r.prevented(subject, target) }
+    permissions = rules.map do |r| 
+                              begin
+                                r.prevented(subject, target)
+                              rescue
+                                []
+                              end
+                            end
     flatten_permissions permissions
   end
 
