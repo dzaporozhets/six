@@ -79,78 +79,77 @@ describe Six do
 
       end
 
-      describe "one rule that returns two permissions" do
+    end
 
-        let(:abilities) { Six.new([rule]) }
+    describe "one rule that returns two permissions" do
 
-        let(:subject) { Object.new }
+      let(:abilities) { Six.new([rule]) }
 
-        let(:rule) do
-          o = Object.new
-          o.stubs(:allowed).with(subject, nil).returns [:orange, :banana]
-          o
-        end
+      let(:subject) { Object.new }
 
-        it "should return true if asked for either, alone" do
-          abilities.allowed?(subject, :orange).must_equal true
-          abilities.allowed?(subject, :banana).must_equal true
-        end
-
-        it "should return true if asked for both at the same time" do
-          abilities.allowed?(subject, [:orange, :banana]).must_equal true
-        end
-
-        it "should return true if asked for one and another that does not match" do
-          abilities.allowed?(subject, [:orange, :apple]).must_equal false
-          abilities.allowed?(subject, [:pear, :banana]).must_equal false
-        end
-
-        it "should return false for other permissions" do
-          abilities.allowed?(subject, :apple).must_equal false
-          abilities.allowed?(subject, :pear).must_equal false
-        end
-
+      let(:rule) do
+        o = Object.new
+        o.stubs(:allowed).with(subject, nil).returns [:orange, :banana]
+        o
       end
 
-      describe "two rules that return one permission each" do
-
-        let(:abilities) { Six.new([rule1, rule2]) }
-
-        let(:subject) { Object.new }
-
-        let(:rule1) do
-          o = Object.new
-          o.stubs(:allowed).with(subject, nil).returns [:orange]
-          o
-        end
-
-        let(:rule2) do
-          o = Object.new
-          o.stubs(:allowed).with(subject, nil).returns [:banana]
-          o
-        end
-
-        it "should return true if asked for either, alone" do
-          abilities.allowed?(subject, :orange).must_equal true
-          abilities.allowed?(subject, :banana).must_equal true
-        end
-
-        it "should return true if asked for both at the same time" do
-          abilities.allowed?(subject, [:orange, :banana]).must_equal true
-        end
-
-        it "should return true if asked for one and another that does not match" do
-          abilities.allowed?(subject, [:orange, :apple]).must_equal false
-          abilities.allowed?(subject, [:pear, :banana]).must_equal false
-        end
-
-        it "should return false for other permissions" do
-          abilities.allowed?(subject, :apple).must_equal false
-          abilities.allowed?(subject, :pear).must_equal false
-        end
-
+      it "should return true if asked for either, alone" do
+        abilities.allowed?(subject, :orange).must_equal true
+        abilities.allowed?(subject, :banana).must_equal true
       end
 
+      it "should return true if asked for both at the same time" do
+        abilities.allowed?(subject, [:orange, :banana]).must_equal true
+      end
+
+      it "should return true if asked for one and another that does not match" do
+        abilities.allowed?(subject, [:orange, :apple]).must_equal false
+        abilities.allowed?(subject, [:pear, :banana]).must_equal false
+      end
+
+      it "should return false for other permissions" do
+        abilities.allowed?(subject, :apple).must_equal false
+        abilities.allowed?(subject, :pear).must_equal false
+      end
+
+    end
+
+    describe "two rules that return one permission each" do
+
+      let(:abilities) { Six.new([rule1, rule2]) }
+
+      let(:subject) { Object.new }
+
+      let(:rule1) do
+        o = Object.new
+        o.stubs(:allowed).with(subject, nil).returns [:orange]
+        o
+      end
+
+      let(:rule2) do
+        o = Object.new
+        o.stubs(:allowed).with(subject, nil).returns [:banana]
+        o
+      end
+
+      it "should return true if asked for either, alone" do
+        abilities.allowed?(subject, :orange).must_equal true
+        abilities.allowed?(subject, :banana).must_equal true
+      end
+
+      it "should return true if asked for both at the same time" do
+        abilities.allowed?(subject, [:orange, :banana]).must_equal true
+      end
+
+      it "should return true if asked for one and another that does not match" do
+        abilities.allowed?(subject, [:orange, :apple]).must_equal false
+        abilities.allowed?(subject, [:pear, :banana]).must_equal false
+      end
+
+      it "should return false for other permissions" do
+        abilities.allowed?(subject, :apple).must_equal false
+        abilities.allowed?(subject, :pear).must_equal false
+      end
 
     end
 
