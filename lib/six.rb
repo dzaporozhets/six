@@ -2,8 +2,12 @@ Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 
 class Six
 
-  def initialize rules = []
-    @rules = rules
+  def initialize(*rules)
+    if rules.count == 1 && rules[0].respond_to?(:each)
+      @rules = rules[0]
+    else
+      @rules = rules
+    end
   end
 
   def allowed? subject, permissions_to_check, target = nil
