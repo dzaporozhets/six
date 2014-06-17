@@ -26,20 +26,36 @@ class Six
   end
 
   def action_included? subject, permission_to_check, target
+    allowed_permissions_for(subject, target)
+      .include? permission_to_check.to_s
+  end
+
+  def allowed_permissions_for subject, target
+    all_permissions       = all_permissions_for(subject, target)
+    permissions_to_reject = permissions_to_reject_for(subject, target)
+
+    all_permissions.reject { |x| permissions_to_reject.include? x.to_s }
+  end
+
+  def all_permissions_for subject, target
     permissions = rules.map do |rp| 
                               begin
                                 rp.allowed subject, target
                               rescue
                                 []
                               end
-                            end.flatten.map { |a| a.to_s }
+                            end
+    flatten_permissions(permissions)
+  end
 
-    permissions_to_reject = rules.select { |r| r.respond_to? :prevented }.map do |rule_pack|
-                              rule_pack.prevented(subject, target)
-                            end.flatten.map { |x| x.to_s } 
+  def permissions_to_reject_for subject, target
+    rules_that_defined_prevented = rules.select { |r| r.respond_to? :prevented }
+    permissions = rules_that_defined_prevented.map { |r| r.prevented(subject, target) }
+    flatten_permissions permissions
+  end
 
-    permissions.reject! { |x| permissions_to_reject.include? x.to_s }
-    permissions.include? permission_to_check.to_s
+  def flatten_permissions permissions
+    permissions.flatten.map { |a| a.to_s }
   end
 
 end
