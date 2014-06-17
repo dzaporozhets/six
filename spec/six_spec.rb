@@ -5,22 +5,33 @@ describe Six do
     true.must_equal true
   end
 
-  describe "smoke tests" do
+# describe "smoke tests" do
+#   it "should work with a constructor argument, too" do
+#     expected_results = [:apple]
+#     subject          = Object.new
+#     target           = Object.new
+#     rule_set = Object.new
+#     rule_set.stubs(:allowed).with(subject, target).returns expected_results
+#     abilities = Six.new([rule_set])
+#     abilities.allowed?(subject, :apple, target).must_equal true
+#     abilities.allowed?(subject, :orange, target).must_equal false
+#   end
+# end
 
-    it "should work with a constructor argument, too" do
+  describe "allowed?" do
 
-      expected_results = [:apple]
-      subject          = Object.new
-      target           = Object.new
+    describe "there are no rules" do
 
-      rule_set = Object.new
-      rule_set.stubs(:allowed).with(subject, target).returns expected_results
+      let(:abilities) { Six.new }
 
-      abilities = Six.new([rule_set])
+      it "should return false" do
+        abilities.allowed?(nil, :does_not_matter).must_equal false
+        abilities.allowed?(Object.new, :something_else).must_equal false
+      end
 
-      abilities.allowed?(subject, :apple, target).must_equal true
-      abilities.allowed?(subject, :orange, target).must_equal false
+    end
 
+    describe "one rule that returns one permission" do
     end
 
   end

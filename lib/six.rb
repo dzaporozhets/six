@@ -7,8 +7,9 @@ class Six
   end
 
   def allowed? subject, permissions_to_check, target = nil
-    permissions_to_check = [permissions_to_check] unless permissions_to_check.respond_to?(:each)
-    permissions_to_check.all? { |a| action_included? subject, a, target }
+    #permissions_to_check = [permissions_to_check] unless permissions_to_check.respond_to?(:each)
+    #permissions_to_check.all? { |a| action_included? subject, a, target }
+    false
   end
 
   private
