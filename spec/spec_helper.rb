@@ -1,4 +1,4 @@
-require "rubygems"
-require "bundler"
-Bundler.require(:default, :development)
-Dir[File.dirname(__FILE__) + '/support/*.rb'].each {|file| require file }
+require_relative '../lib/six.rb'
+require 'minitest/autorun'
+require 'minitest/spec'
+require 'mocha/setup'
