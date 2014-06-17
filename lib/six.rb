@@ -7,7 +7,7 @@ class Six
   end
 
   def allowed? subject, permissions_to_check, target = nil
-    permissions_to_check = [permissions_to_check] unless permissions_to_check.respond_to?(:each)
+    permissions_to_check = [permissions_to_check] unless this_is_an_array?(permissions_to_check)
     permissions_to_check.all? { |a| action_included? subject, a, target }
   end
 
@@ -18,11 +18,11 @@ class Six
   end
 
   def a_single_array_was_provided? rules
-    rules.count == 1 && this_is_an_array?(rules)
+    rules.count == 1 && this_is_an_array?(rules[0])
   end
 
   def this_is_an_array? thing
-    thing[0].respond_to?(:each)
+    thing.respond_to?(:each)
   end
 
   def action_included? subject, permission_to_check, target
