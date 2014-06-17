@@ -3,11 +3,7 @@ Dir[File.dirname(__FILE__) + '/six/*.rb'].each { |f| require f }
 class Six
 
   def initialize(*rules)
-    @rules = if rules.count == 1 && rules[0].respond_to?(:each)
-               rules[0]
-             else
-               rules
-             end
+    @rules = a_single_array_was_provided?(rules) ? rules[0] : rules
   end
 
   def allowed? subject, permissions_to_check, target = nil
@@ -19,6 +15,14 @@ class Six
 
   def rules
     @rules
+  end
+
+  def a_single_array_was_provided? rules
+    rules.count == 1 && this_is_an_array?(rules)
+  end
+
+  def this_is_an_array? thing
+    thing[0].respond_to?(:each)
   end
 
   def action_included? subject, permission_to_check, target
