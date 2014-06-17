@@ -153,6 +153,38 @@ describe Six do
 
     end
 
+    describe "rejecting permissions" do
+
+      let(:abilities) { Six.new([rule1, rule2]) }
+
+      let(:subject) { Object.new }
+
+      let(:rule1) do
+        o = Object.new
+        o.stubs(:allowed).with(subject, nil).returns [:orange, :banana]
+        o.stubs(:prevented).with(subject, nil).returns [:apple]
+        o
+      end
+
+      let(:rule2) do
+        o = Object.new
+        o.stubs(:allowed).with(subject, nil).returns [:apple, :pear]
+        o.stubs(:prevented).with(subject, nil).returns [:banana]
+        o
+      end
+
+      it "should return false for the permissions that are prevented" do
+        abilities.allowed?(subject, :banana).must_equal false
+        abilities.allowed?(subject, :apple).must_equal false
+      end
+
+      it "should return true for the permissions that are not prevented" do
+        abilities.allowed?(subject, :pear).must_equal true
+        abilities.allowed?(subject, :orange).must_equal true
+      end
+
+    end
+
   end
 
 end
