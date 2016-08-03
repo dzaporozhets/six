@@ -124,8 +124,6 @@ class Six
   #
   def valid_rules_object?(object)
     object.respond_to?(:allowed)
-  rescue
-    false
   end
 
   # Check if authorization class has pack with such name
