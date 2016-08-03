@@ -123,8 +123,7 @@ class Six
   # true or false
   #
   def valid_rules_object?(object)
-    object.respond_to?(:allowed) &&
-      object.send(:allowed, nil, nil).kind_of?(Array)
+    object.respond_to?(:allowed)
   rescue
     false
   end
