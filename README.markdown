@@ -21,7 +21,7 @@ _based on clear ruby it can be used for rails 2 & 3 or any other framework_
 1. create abilities object
 
     ```ruby
-      abilites = Six.new
+      abilities = Six.new
     ```
 
 2. create object/class with allowed method - here you'll put conditions to define abilities
@@ -40,7 +40,7 @@ _based on clear ruby it can be used for rails 2 & 3 or any other framework_
     abilities << BookRules # true
     ```
 
-4. Thats all. Now you can check abilites. In difference to CanCan it doesnt use current_user method. you manually pass object & subject.
+4. Thats all. Now you can check abilities. In difference to CanCan it doesnt use current_user method. you manually pass object & subject.
 
     ```ruby
     abilities.allowed?(@user, :read_book, @book) # true
@@ -140,8 +140,8 @@ class BookRules
   end
 end
 
-# create abilites object
-abilites = Six.new
+# create abilities object
+abilities = Six.new
 
 # add rules
 abilities << BookRules # true
