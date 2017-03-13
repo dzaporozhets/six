@@ -71,12 +71,12 @@ class Six
   # true or false
   #
   def add_pack(name, pack)
-    rules_packs[name.to_sym] = pack if valid_rules_object?(pack)
+    rules_packs[name.to_sym] = pack# if valid_rules_object?(pack)
   end
 
   # Same as add_pack but raise exception if pack is invalid
   def add_pack!(name, pack)
-    add_pack(name, pack) || raise_incorrect_pack_object
+    add_pack(name, pack)# || raise_incorrect_pack_object
   end
 
   # Add pack to authorization class w/o key
@@ -159,7 +159,7 @@ class Six
   # == Returns:
   # true or false
   #
-  def allowed?(object, actions, subject)
+  def allowed?(object, actions, subject = nil)
     # if multiple actions passed
     # check all actions to be allowed
     if actions.respond_to?(:each)
@@ -180,10 +180,18 @@ class Six
 
   def action_included?(object, action, subject)
     if current_rule_pack
-      rules_packs[current_rule_pack].allowed(object, subject).include?(action)
+      rules_packs[current_rule_pack].allowed(object, subject)
+                                    .map { |a| a.to_s }
+                                    .include?(action.to_s)
     else
-      rules_packs.values.map { |rp| rp.allowed(object, subject) }.flatten.include?(action)
+      rules_packs.values
+                 .map { |rp| rp.allowed(object, subject) }
+                 .flatten
+                 .map { |a| a.to_s }
+                 .include?(action.to_s)
     end
+  rescue
+    false
   end
 
   def raise_no_such_pack

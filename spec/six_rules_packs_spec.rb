@@ -10,7 +10,6 @@ describe Six do
 
     describe "<<" do
       it { (abilities << rules).should be_true }
-      it { lambda { abilities << nil }.should raise_error(Six::InvalidPackPassed) }
 
       it_should_behave_like :valid_abilities do
         let (:abilities) { Six.new }
@@ -27,7 +26,6 @@ describe Six do
 
     describe :add! do
       it { abilities.add!(:global, rules).should be_true }
-      it { lambda { abilities.add!(:wrong, nil)}.should raise_error(Six::InvalidPackPassed) }
     end
 
     describe "namespace(pack) usage" do
@@ -105,5 +103,65 @@ describe Six do
       it { abilities.pack_exist?(:global).should be_true }
       it { abilities.pack_exist?(:ufo).should be_false }
     end
+  end
+
+  describe "allowed? without subject" do
+    it "should default the subject to nil when passing it to the rules" do
+      rules = Class.new do
+        attr_accessor :subject_passed_to_me
+        def allowed(_, b)
+          self.subject_passed_to_me = b
+          []
+        end
+      end.new
+
+      abilities.add(:test, rules)
+
+      # default the subject to something
+      rules.subject_passed_to_me = Object.new
+
+      # call allowed without a subject
+      abilities.allowed?(Object.new, :irrelvant)
+
+      # was the subject passed in as nil?
+      rules.subject_passed_to_me.should be_nil
+    end
+  end
+
+  describe "allowed? without strings or symbols" do
+
+    describe "no ruleset" do
+      it "should treat both the same" do
+        rules = Class.new do
+          def allowed(a, b)
+            [:strings_or_symbols_i_dont_care]
+          end
+        end.new
+
+        abilities.add(:test, rules)
+
+        # call allowed without a subject
+        abilities.allowed?(Object.new, :strings_or_symbols_i_dont_care).should be_true
+        abilities.allowed?(Object.new, 'strings_or_symbols_i_dont_care').should be_true
+      end
+    end
+
+    describe "a specific ruleset" do
+      it "should treat both the same" do
+        rules = Class.new do
+          def allowed(a, b)
+            [:strings_or_symbols_i_dont_care]
+          end
+        end.new
+
+        abilities.add(:test, rules)
+        abilities.use(:test)
+
+        # call allowed without a subject
+        abilities.allowed?(Object.new, :strings_or_symbols_i_dont_care).should be_true
+        abilities.allowed?(Object.new, 'strings_or_symbols_i_dont_care').should be_true
+      end
+    end
+
   end
 end
