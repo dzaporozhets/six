@@ -71,8 +71,8 @@ end
 
 # books_controller.rb
 class BooksController < ApplicationController
-  before_filter :add_abilities
-  before_filter :load_author
+  before_action :add_abilities
+  before_action :load_author
 
   def show
     @book = Book.find(params[:id])
