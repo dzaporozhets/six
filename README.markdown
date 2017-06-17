@@ -21,7 +21,7 @@ _based on clear ruby it can be used for rails 2 & 3 or any other framework_
 1. create abilities object
 
     ```ruby
-      abilites = Six.new
+      abilities = Six.new
     ```
 
 2. create object/class with allowed method - here you'll put conditions to define abilities
