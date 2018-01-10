@@ -9,7 +9,7 @@ describe Six do
     let(:rules) { BookRules.new }
 
     describe "<<" do
-      it { (abilities << rules).should be_true }
+      it { (abilities << rules).should be_truthy }
       it { lambda { abilities << nil }.should raise_error(Six::InvalidPackPassed) }
 
       it_should_behave_like :valid_abilities do
@@ -21,12 +21,12 @@ describe Six do
     end
 
     describe :add do
-      it { abilities.add(:global, rules).should be_true }
-      it { abilities.add(:wrong, nil).should be_false }
+      it { abilities.add(:global, rules).should be_truthy }
+      it { abilities.add(:wrong, nil).should be_falsey }
     end
 
     describe :add! do
-      it { abilities.add!(:global, rules).should be_true }
+      it { abilities.add!(:global, rules).should be_truthy }
       it { lambda { abilities.add!(:wrong, nil)}.should raise_error(Six::InvalidPackPassed) }
     end
 
@@ -45,7 +45,7 @@ describe Six do
         end
 
         it "should return false when trying to use unexisting pack" do
-          abilities.use(:noname).should be_false
+          abilities.use(:noname).should be_falsey
         end
       end
 
@@ -75,12 +75,12 @@ describe Six do
       before { abilities.add(:global, rules) }
 
       describe :remove do
-        it { abilities.remove(:global).should be_true }
-        it { abilities.remove(:zzz).should be_false }
+        it { abilities.remove(:global).should be_truthy }
+        it { abilities.remove(:zzz).should be_falsey }
       end
 
       describe :remove! do
-        it { abilities.remove!(:global).should be_true }
+        it { abilities.remove!(:global).should be_truthy }
         it { lambda { abilities.remove!(:zzz)}.should raise_error(Six::NoPackError) }
       end
     end
@@ -90,15 +90,15 @@ describe Six do
         Object.new
       end
 
-      it { abilities.valid_rules_object?(BookRules.new).should be_true }
-      it { abilities.valid_rules_object?(invalid).should be_false }
+      it { abilities.valid_rules_object?(BookRules.new).should be_truthy }
+      it { abilities.valid_rules_object?(invalid).should be_falsey }
     end
 
     describe :pack_exist? do
       before { abilities.add(:global, rules) }
 
-      it { abilities.pack_exist?(:global).should be_true }
-      it { abilities.pack_exist?(:ufo).should be_false }
+      it { abilities.pack_exist?(:global).should be_truthy }
+      it { abilities.pack_exist?(:ufo).should be_falsey }
     end
   end
 end
