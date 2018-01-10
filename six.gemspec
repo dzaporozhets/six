@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'six'
-  s.version     = '0.2.0'
-  s.date        = '2011-09-02'
+  s.version     = `cat VERSION`
+  s.date        = Time.now.strftime("%Y-%m-%d")
   s.summary     = "six"
   s.license     = 'MIT'
   s.description = "Very simple authorization gem"
