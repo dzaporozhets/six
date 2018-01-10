@@ -1,5 +1,8 @@
 require 'simplecov'
-SimpleCov.start
+
+SimpleCov.start do
+  add_filter "/vendor"
+end
 
 Dir[File.dirname(__FILE__) + '/support/*.rb'].each {|file| require file }
 
