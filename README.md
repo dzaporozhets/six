@@ -1,8 +1,7 @@
 ## Six - is a ultra simple authorization gem for ruby! 
 
-[![Build Status](https://travis-ci.org/dzaporozhets/six.png?branch=master)](https://travis-ci.org/dzaporozhets/six)
-[![Code Climate](https://codeclimate.com/github/randx/six.png)](https://codeclimate.com/github/randx/six)
-[![Coverage Status](https://coveralls.io/repos/randx/six/badge.png?branch=master)](https://coveralls.io/r/randx/six?branch=master)
+[![pipeline status](https://gitlab.com/dzaporozhets/six/badges/master/pipeline.svg)](https://gitlab.com/dzaporozhets/six/commits/master)
+[![coverage report](https://gitlab.com/dzaporozhets/six/badges/master/coverage.svg)](https://gitlab.com/dzaporozhets/six/commits/master)
 [![Code Climate](https://codeclimate.com/github/randx/six.png)](https://codeclimate.com/github/randx/six)
 
 _based on clear ruby it can be used for rails 2 & 3 or any other framework_
