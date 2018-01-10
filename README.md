@@ -1,6 +1,6 @@
 ## Six - is a ultra simple authorization gem for ruby! 
 
-[![Build Status](https://travis-ci.org/randx/six.png?branch=master)](https://travis-ci.org/randx/six)
+[![Build Status](https://travis-ci.org/dzaporozhets/six.png?branch=master)](https://travis-ci.org/dzaporozhets/six)
 [![Code Climate](https://codeclimate.com/github/randx/six.png)](https://codeclimate.com/github/randx/six)
 [![Coverage Status](https://coveralls.io/repos/randx/six/badge.png?branch=master)](https://coveralls.io/r/randx/six?branch=master)
 [![Code Climate](https://codeclimate.com/github/randx/six.png)](https://codeclimate.com/github/randx/six)
@@ -21,7 +21,7 @@ _based on clear ruby it can be used for rails 2 & 3 or any other framework_
 1. create abilities object
 
     ```ruby
-      abilites = Six.new
+      abilities = Six.new
     ```
 
 2. create object/class with allowed method - here you'll put conditions to define abilities
@@ -40,7 +40,7 @@ _based on clear ruby it can be used for rails 2 & 3 or any other framework_
     abilities << BookRules # true
     ```
 
-4. Thats all. Now you can check abilites. In difference to CanCan it doesnt use current_user method. you manually pass object & subject.
+4. Thats all. Now you can check abilities. In difference to CanCan it doesnt use current_user method. you manually pass object & subject.
 
     ```ruby
     abilities.allowed?(@user, :read_book, @book) # true
@@ -71,8 +71,8 @@ end
 
 # books_controller.rb
 class BooksController < ApplicationController
-  before_filter :add_abilities
-  before_filter :load_author
+  before_action :add_abilities
+  before_action :load_author
 
   def show
     @book = Book.find(params[:id])
@@ -140,8 +140,8 @@ class BookRules
   end
 end
 
-# create abilites object
-abilites = Six.new
+# create abilities object
+abilities = Six.new
 
 # add rules
 abilities << BookRules # true

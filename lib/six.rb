@@ -123,10 +123,7 @@ class Six
   # true or false
   #
   def valid_rules_object?(object)
-    object.respond_to?(:allowed) &&
-      object.send(:allowed, nil, nil).kind_of?(Array)
-  rescue
-    false
+    object.respond_to?(:allowed)
   end
 
   # Check if authorization class has pack with such name
