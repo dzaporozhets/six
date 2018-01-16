@@ -4,7 +4,7 @@
 [![coverage report](https://gitlab.com/dzaporozhets/six/badges/master/coverage.svg)](https://gitlab.com/dzaporozhets/six/commits/master)
 [![Code Climate](https://codeclimate.com/github/randx/six.png)](https://codeclimate.com/github/randx/six)
 
-_based on clear ruby it can be used for rails 2 & 3 or any other framework_
+_based on clear ruby it can be used for rails applications or any other framework_
 
 ### Installation
 
