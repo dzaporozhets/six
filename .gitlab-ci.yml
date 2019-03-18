@@ -12,7 +12,7 @@ codeclimate:
     paths: [codeclimate.json]
     
 rspec:
-  image: "ruby:2.3"
+  image: "ruby:2.4"
   cache:
     paths:
       - vendor/ruby
@@ -20,7 +20,7 @@ rspec:
     - gem install bundler
     - bundle install -j $(nproc) --path vendor
   script:
-    - rspec spec
+    - bundle exec rspec spec
 
 
 sast:
