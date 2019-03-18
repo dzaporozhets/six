@@ -120,7 +120,7 @@ class BookRules
   # No magic behind the scene
   # You can put this method to any class or object you want
   # It should always return array
-  # And be aready to get nil in args
+  # And be ready to get nil in args
   def self.allowed(author, book)
     rules = []
 
