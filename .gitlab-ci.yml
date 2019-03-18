@@ -17,7 +17,7 @@ rspec:
     paths:
       - vendor/ruby
   before_script:
-    - gem install bundler  --no-ri --no-rdoc
+    - gem install bundler
     - bundle install -j $(nproc) --path vendor
   script:
     - rspec spec
