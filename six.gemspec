@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.authors     = ["Dmitriy Zaporozhets"]
   s.email       = 'dmitriy.zaporozhets@gmail.com'
   s.files       = ["lib/six.rb", "LICENSE"]
-  s.homepage    = 'https://github.com/randx/six'
+  s.homepage    = 'https://gitlab.com/dzaporozhets/six'
 end
