@@ -20,8 +20,8 @@ before_script:
 rubocop:
   allow_failure: true
   script:
-    - rubocop
+    - bundle exec rubocop
 
 rspec:
   script:
-    - rspec spec
+    - bundle exec rspec spec
