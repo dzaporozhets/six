@@ -18,6 +18,7 @@ before_script:
 
 # Optional - Delete if not using `rubocop`
 rubocop:
+  allow_failure: true
   script:
     - rubocop
 
