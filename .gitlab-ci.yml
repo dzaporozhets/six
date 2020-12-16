@@ -12,7 +12,7 @@ codeclimate:
     paths: [codeclimate.json]
     
 rspec:
-  image: "ruby:2.4"
+  image: "ruby:2.7"
   cache:
     paths:
       - vendor/ruby
