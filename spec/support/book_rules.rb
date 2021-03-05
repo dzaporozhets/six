@@ -11,4 +11,3 @@ class BookRules
     rules
   end
 end
-

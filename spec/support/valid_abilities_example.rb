@@ -47,10 +47,10 @@ shared_examples :valid_abilities do
       end
 
       context 'passing multiple actions' do
-        it { allowed?(@jim, [:read_book, :edit_book], @jims_book).should be_truthy }
-        it { allowed?(@jim, [:ead_book,  :publish_book, :edit_book], @jims_book).should be_falsey }
-        it { allowed?(@mike, [:read_book, :edit_book], @mikes_book).should be_truthy }
-        it { allowed?(@mike, [:rate_book, :publish_book, :edit_book], @mikes_book).should be_falsey }
+        it { allowed?(@jim, %i[read_book edit_book], @jims_book).should be_truthy }
+        it { allowed?(@jim, %i[ead_book publish_book edit_book], @jims_book).should be_falsey }
+        it { allowed?(@mike, %i[read_book edit_book], @mikes_book).should be_truthy }
+        it { allowed?(@mike, %i[rate_book publish_book edit_book], @mikes_book).should be_falsey }
       end
     end
   end

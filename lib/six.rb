@@ -1,7 +1,7 @@
 class Six
   class NoPackError < StandardError
     def message
-      "No such pack"
+      'No such pack'
     end
   end
 
@@ -13,12 +13,11 @@ class Six
 
   class InitializeArgumentError < StandardError
     def message
-      "Six.new require hash as pack argument in format {:name_of_pack => PackRules.new}"
+      'Six.new require hash as pack argument in format {:name_of_pack => PackRules.new}'
     end
   end
 
-  attr_reader :rules_packs
-  attr_reader :current_rule_pack
+  attr_reader :rules_packs, :current_rule_pack
 
   # Initialize ability object
   #
@@ -29,8 +28,8 @@ class Six
   # == Returns:
   # self
   #
-  def initialize(packs={})
-    raise InitializeArgumentError.new unless packs.kind_of?(Hash)
+  def initialize(packs = {})
+    raise InitializeArgumentError unless packs.is_a?(Hash)
 
     @rules_packs = {}
     @current_rule_pack = nil
@@ -184,21 +183,21 @@ class Six
   end
 
   def raise_no_such_pack
-    raise Six::NoPackError.new
+    raise Six::NoPackError
   end
 
   def raise_incorrect_pack_object
-    raise Six::InvalidPackPassed.new
+    raise Six::InvalidPackPassed
   end
 
   # shotcuts for long methods
 
-  alias_method :use, :use_pack
-  alias_method :use!, :use_pack!
-  alias_method :add, :add_pack
-  alias_method :add!, :add_pack!
-  alias_method :remove, :remove_pack
-  alias_method :remove!, :remove_pack!
-  alias_method :reset, :reset_use
-  alias_method :exist?, :pack_exist?
+  alias use use_pack
+  alias use! use_pack!
+  alias add add_pack
+  alias add! add_pack!
+  alias remove remove_pack
+  alias remove! remove_pack!
+  alias reset reset_use
+  alias exist? pack_exist?
 end
