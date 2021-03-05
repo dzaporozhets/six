@@ -1,8 +1,8 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
 group :development, :test do
-  gem 'simplecov', require: false
-  gem 'rspec', '2.99.0'
   gem 'awesome_print'
+  gem 'rspec', '2.99.0'
   gem 'rubocop'
+  gem 'simplecov', require: false
 end
