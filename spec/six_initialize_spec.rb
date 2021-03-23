@@ -11,20 +11,20 @@ describe Six, 'initialize' do
       @mikes_book = Book.new('Life', @mike)
     end
 
-    it 'should create authorization object' do
-      Six.new.should be_kind_of(Six)
+    it 'creates authorization object' do
+      expect(Six.new).to be_kind_of(Six)
     end
 
-    it 'should raise error if invalid argument passed' do
-      -> { Six.new('wrong argument') }.should raise_error Six::InitializeArgumentError
+    it 'raises error if invalid argument passed' do
+      expect { Six.new('wrong argument') }.to raise_error Six::InitializeArgumentError
     end
 
-    it 'should create authorization object' do
-      Six.new(book_rules: BookRules.new).should be_kind_of(Six)
+    it 'creates authorization object' do
+      expect(Six.new(book_rules: BookRules.new)).to be_kind_of(Six)
     end
 
-    it 'should create authorization object' do
-      Six.new(book0: BookRules.new, book1: BookRules.new).should be_kind_of(Six)
+    it 'creates authorization object' do
+      expect(Six.new(book0: BookRules.new, book1: BookRules.new)).to be_kind_of(Six)
     end
 
     describe 'passing rules on initialization' do
