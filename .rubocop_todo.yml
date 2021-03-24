@@ -54,6 +54,7 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Exclude:
     - 'Gemfile'
+    - 'Rakefile'
     - 'lib/six.rb'
     - 'six.gemspec'
     - 'spec/six_initialize_spec.rb'
