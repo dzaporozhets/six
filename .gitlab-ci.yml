@@ -3,6 +3,9 @@
 # https://hub.docker.com/r/library/ruby/tags/
 image: "ruby:2.5"
 
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+
 # Cache gems in between builds
 cache:
   paths:
